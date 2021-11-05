@@ -6,6 +6,7 @@ Copyright   : Rui Pedro Cerqueira <a100537@alunos.uminho.pt>;
 
 Módulo para a realização da Tarefa 1 do projeto de LI1 em 2021/22.
 -}
+
 module Tarefa1_2021li1g099 where
 
 import LI12122
@@ -13,10 +14,10 @@ import LI12122
 {-
 validaPotencialMapa :: [(Peca, Coordenadas)] -> Bool
 validaPotencialMapa [] = False
-validaPotencialMapa x = validaPos x && 
+validaPotencialMapa x = validaPosicoes x && validaPorta x && validaVazios x
 -}
 
--- // -- 1
+-- 1
 
 validaPosicoes :: [(Peca, Coordenadas)] -> Bool
 validaPosicoes [] = True
@@ -27,19 +28,20 @@ validaC _ [] = True
 validaC a@(p,(x1,y1)) ((p1,(x2,y2)):t) | x1 == x2 && y1 == y2 = False
                                        | otherwise = validaC a t
 
--- // -- 2
+-- 2 & 4
 
 validaPorta :: [(Peca,Coordenadas)] -> Bool
-validaPorta [] = False
-validaPorta l | (contaPorta l 0) == 1 = True
-              | otherwise = False
+validaPorta l = (contaPecas Porta 0 l) == 1
 
-contaPorta :: [(Peca,Coordenadas)] -> Int -> Int
-contaPorta [] _ = 0
-contaPorta ((p,c):t) acc | p == Porta = acc+1 + contaPorta t acc
-                         | otherwise = contaPorta t acc
+validaVazios :: [(Peca,Coordenadas)] -> Bool
+validaVazios l = (contaPecas Vazio 0 l) >= 1
 
--- // -- 3
+contaPecas :: Peca -> Int -> [(Peca,Coordenadas)] -> Int
+contaPecas peca acc [] = acc
+contaPecas peca acc ((p,c):t) | p == peca = contaPecas peca (acc+1) t
+                              | otherwise = contaPecas peca acc t
+
+-- 3
 
 {-
 validaCaixa :: [(Peca,Coordenadas)] -> Bool
@@ -57,19 +59,7 @@ on' p | p == Bloco || p == Caixa = True
       | otherwise = False
 -}
 
--- // -- 4
-
-validaVazios :: [(Peca,Coordenadas)] -> Bool
-validaVazios [] = False
-validaVazios l | (contaVazios l 0) >= 1 = True
-               | otherwise = False
-
-contaVazios :: [(Peca,Coordenadas)] -> Int -> Int
-contaVazios [] _ = 0
-contaVazios ((p,c):t) acc | p == Vazio = acc+1 +  contaVazios t acc
-                          | otherwise = contaVazios t acc
-
--- // -- 5
+-- 5
 
 {-
 validaChao :: [(Peca,Coordenadas)] -> Bool
@@ -78,6 +68,3 @@ validaChao ((p,c):t) | y == yMax && p == Bloco && validaChao t
 
 yMax :: [(Peca,Coordenadas)] -> Int
 -}
-
-
- 
