@@ -12,9 +12,11 @@ module Tarefa1_2021li1g099 where
 import LI12122
 
 {-
+
 validaPotencialMapa :: [(Peca, Coordenadas)] -> Bool
 validaPotencialMapa [] = False
-validaPotencialMapa x = validaPosicoes x && validaPorta x && validaVazios x
+validaPotencialMapa x = validaPosicoes x && validaPorta x && validaVazios x && validaCaixas x x
+
 -}
 
 -- 1
@@ -33,7 +35,7 @@ validaC a@(p,(x1,y1)) ((p1,(x2,y2)):t) | x1 == x2 && y1 == y2 = False
 validaPorta :: [(Peca,Coordenadas)] -> Bool
 validaPorta l = (contaPecas Porta 0 l) == 1
 
-validaVazios :: [(Peca,Coordenadas)] -> Bool
+validaVazios :: [(Peca,Coordenadas)] -> Bool -- precisa de modificações para englobar as coordenadas não declaradas
 validaVazios l = (contaPecas Vazio 0 l) >= 1
 
 contaPecas :: Peca -> Int -> [(Peca,Coordenadas)] -> Int
@@ -43,28 +45,40 @@ contaPecas peca acc ((p,c):t) | p == peca = contaPecas peca (acc+1) t
 
 -- 3
 
-{-
-validaCaixa :: [(Peca,Coordenadas)] -> Bool
-validaCaixa [] = True
-validaCaixa l@((p,c):t) | p == Caixa = on c l
-                        | otherwise = validaCaixa t
+validaCaixas :: [(Peca,Coordenadas)] -> [(Peca,Coordenadas)] -> Bool
+validaCaixas [] _ = True
+validaCaixas l1@((p,c):t) l2 | p == Caixa && not (on c l2) = False
+                             | p == Caixa && on c l2 = validaCaixas t l2
+                             | otherwise = validaCaixas t l2
 
 on :: Coordenadas -> [(Peca,Coordenadas)] -> Bool
-on _ [] = False
-on a@(x1,y1) ((p,(x2,y2)):t) | x1 == x2 && y1 == y2-1 = on' p
-                             | otherwise = on a t
-
-on' :: Peca -> Bool
-on' p | p == Bloco || p == Caixa = True
-      | otherwise = False
--}
+on _ [] = True
+on (x,y) l | elem (Bloco,(x,y+1)) l = True
+           | elem (Caixa,(x,y+1)) l = True
+           | otherwise = False
 
 -- 5
 
-{-
+{- work in progress
+
 validaChao :: [(Peca,Coordenadas)] -> Bool
-validaChao [] = False
-validaChao ((p,c):t) | y == yMax && p == Bloco && validaChao t
+validaChao l = exists (filter aux l) (xMax l)
+      where aux (_,(_,y)) = y == yMax l
+
+validaChao l = all (filter aux l)
+      where aux (_,(_,y)) = y == yMax l
+
+exists :: [(Peca,Coordenadas)] -> Int -> Bool
+exists [] _ = False
+exists l@((p,(x,y)):t) acc | acc >= 0 = if ((elem (Bloco,(acc,y)) l) && (exists l (acc-1))) then True else False
+                           | otherwise = True
+
+xMax :: [(Peca,Coordenadas)] -> Int
+xMax [(_,(x,_))] = x
+xMax ((_,(x,_)):t) = max x (xMax t)
 
 yMax :: [(Peca,Coordenadas)] -> Int
+yMax [(_,(_,y))] = y
+yMax ((_,(_,y)):t) = max y (yMax t)
+
 -}
