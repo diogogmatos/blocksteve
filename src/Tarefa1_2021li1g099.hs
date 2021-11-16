@@ -65,8 +65,8 @@ on (x,y) l | elem (Bloco,(x,y+1)) l = True
 
 validaChao :: [(Peca,Coordenadas)] -> Int -> Bool
 validaChao l acc | not (elem (Bloco,(acc,yMax (filter aux1 l))) l) = False
-                 | (acc < xMax l) && validaLigacao (acc,yMax (filter aux1 l)) (acc+1, yMax (filter aux2 l)) l && validaChao l (acc+1) = True
                  | acc == xMax l = True
+                 | (acc < xMax l) && validaLigacao (acc,yMax (filter aux1 l)) (acc+1, yMax (filter aux2 l)) l && validaChao l (acc+1) = True
                  | otherwise = False
                  where aux1 (_,(x,_)) = x == acc
                        aux2 (_,(x,_)) = x == acc+1
@@ -74,8 +74,8 @@ validaChao l acc | not (elem (Bloco,(acc,yMax (filter aux1 l))) l) = False
 validaLigacao :: Coordenadas -> Coordenadas -> [(Peca,Coordenadas)] -> Bool
 validaLigacao (x1,y1) b@(x2,y2) l | (x1 == x2) && (y1 == y2) = True
                                   | elem (Bloco,(x1,y1-1)) l && (abs (y2 - y1) >= abs (y2 - (y1-1))) = validaLigacao (x1,y1-1) b l
-                                  | elem (Bloco,(x1+1,y1-1)) l && (abs (y2 - y1) >= abs (y2 - (y1-1))) = validaLigacao (x1+1,y1-1) b l
-                                  | elem (Bloco,(x1+1,y1)) l = validaLigacao (x1+1,y1) b l
-                                  | elem (Bloco,(x1+1,y1+1)) l && (abs (y2 - y1) >= abs (y2 - (y1+1))) = validaLigacao (x1+1,y1+1) b l
+                                  | elem (Bloco,(x1+1,y1-1)) l && (abs (y2 - y1) >= abs (y2 - (y1-1))) && (abs (x2 - x1) >= abs (x2 - (x1+1))) = validaLigacao (x1+1,y1-1) b l
+                                  | elem (Bloco,(x1+1,y1)) l && (abs (x2 - x1) >= abs (x2 - (x1+1))) = validaLigacao (x1+1,y1) b l
+                                  | elem (Bloco,(x1+1,y1+1)) l && (abs (y2 - y1) >= abs (y2 - (y1+1))) && (abs (x2 - x1) >= abs (x2 - (x1+1))) = validaLigacao (x1+1,y1+1) b l
                                   | elem (Bloco,(x1,y1+1)) l && (abs (y2 - y1) >= abs (y2 - (y1+1))) = validaLigacao (x1,y1+1) b l
                                   | otherwise = False
