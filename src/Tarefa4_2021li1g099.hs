@@ -15,4 +15,3 @@ moveJogador jogo movimento = undefined
 
 correrMovimentos :: Jogo -> [Movimento] -> Jogo
 correrMovimentos jogo movimentos = undefined
-
