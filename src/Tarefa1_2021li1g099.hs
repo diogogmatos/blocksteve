@@ -11,37 +11,41 @@ module Tarefa1_2021li1g099 where
 
 import LI12122
 
-{-
-
 validaPotencialMapa :: [(Peca, Coordenadas)] -> Bool
 validaPotencialMapa [] = False
-validaPotencialMapa x = validaPosicoes x && validaPorta x && validaVazios x && validaCaixas x x
-
--}
+validaPotencialMapa x = validaPosicoes x && validaPorta x && validaVazios x && validaCaixas x x && validaChao x 0
 
 -- 1
 
 validaPosicoes :: [(Peca, Coordenadas)] -> Bool
 validaPosicoes [] = True
-validaPosicoes ((p,c):t) = validaC (p,c) t && validaPosicoes t
+validaPosicoes ((p,c):t) = validaC c t && validaPosicoes t
 
-validaC :: (Peca, Coordenadas) -> [(Peca, Coordenadas)] -> Bool
+validaC :: Coordenadas -> [(Peca, Coordenadas)] -> Bool
 validaC _ [] = True
-validaC a@(p,(x1,y1)) ((p1,(x2,y2)):t) | x1 == x2 && y1 == y2 = False
-                                       | otherwise = validaC a t
+validaC c@(x1,y1) ((p1,(x2,y2)):t) | x1 == x2 && y1 == y2 = False
+                                   | otherwise = validaC c t
 
 -- 2 & 4
 
 validaPorta :: [(Peca,Coordenadas)] -> Bool
 validaPorta l = (contaPecas Porta 0 l) == 1
 
-validaVazios :: [(Peca,Coordenadas)] -> Bool -- precisa de modificações para englobar as coordenadas não declaradas
-validaVazios l = (contaPecas Vazio 0 l) >= 1
+validaVazios :: [(Peca,Coordenadas)] -> Bool
+validaVazios l = ((contaPecas Vazio 0 l) >= 1) || (length l /= ((xMax l + 1) * (yMax l + 1)))
 
 contaPecas :: Peca -> Int -> [(Peca,Coordenadas)] -> Int
 contaPecas peca acc [] = acc
 contaPecas peca acc ((p,c):t) | p == peca = contaPecas peca (acc+1) t
                               | otherwise = contaPecas peca acc t
+
+xMax :: [(Peca,Coordenadas)] -> Int
+xMax [(_,(x,_))] = x
+xMax ((_,(x,_)):t) = max x (xMax t)
+
+yMax :: [(Peca,Coordenadas)] -> Int
+yMax [(_,(_,y))] = y
+yMax ((_,(_,y)):t) = max y (yMax t)
 
 -- 3
 
@@ -59,26 +63,19 @@ on (x,y) l | elem (Bloco,(x,y+1)) l = True
 
 -- 5
 
-{- work in progress
+validaChao :: [(Peca,Coordenadas)] -> Int -> Bool
+validaChao l acc | not (elem (Bloco,(acc,yMax (filter aux1 l))) l) = False
+                 | acc == xMax l = True
+                 | (acc < xMax l) && validaLigacao (acc,yMax (filter aux1 l)) (acc+1, yMax (filter aux2 l)) l && validaChao l (acc+1) = True
+                 | otherwise = False
+                 where aux1 (_,(x,_)) = x == acc
+                       aux2 (_,(x,_)) = x == acc+1
 
-validaChao :: [(Peca,Coordenadas)] -> Bool
-validaChao l = exists (filter aux l) (xMax l)
-      where aux (_,(_,y)) = y == yMax l
-
-validaChao l = all (filter aux l)
-      where aux (_,(_,y)) = y == yMax l
-
-exists :: [(Peca,Coordenadas)] -> Int -> Bool
-exists [] _ = False
-exists l@((p,(x,y)):t) acc | acc >= 0 = if ((elem (Bloco,(acc,y)) l) && (exists l (acc-1))) then True else False
-                           | otherwise = True
-
-xMax :: [(Peca,Coordenadas)] -> Int
-xMax [(_,(x,_))] = x
-xMax ((_,(x,_)):t) = max x (xMax t)
-
-yMax :: [(Peca,Coordenadas)] -> Int
-yMax [(_,(_,y))] = y
-yMax ((_,(_,y)):t) = max y (yMax t)
-
--}
+validaLigacao :: Coordenadas -> Coordenadas -> [(Peca,Coordenadas)] -> Bool
+validaLigacao (x1,y1) b@(x2,y2) l | (x1 == x2) && (y1 == y2) = True
+                                  | elem (Bloco,(x1,y1-1)) l && (abs (y2 - y1) >= abs (y2 - (y1-1))) = validaLigacao (x1,y1-1) b l
+                                  | elem (Bloco,(x1+1,y1-1)) l && (abs (y2 - y1) >= abs (y2 - (y1-1))) && (abs (x2 - x1) >= abs (x2 - (x1+1))) = validaLigacao (x1+1,y1-1) b l
+                                  | elem (Bloco,(x1+1,y1)) l && (abs (x2 - x1) >= abs (x2 - (x1+1))) = validaLigacao (x1+1,y1) b l
+                                  | elem (Bloco,(x1+1,y1+1)) l && (abs (y2 - y1) >= abs (y2 - (y1+1))) && (abs (x2 - x1) >= abs (x2 - (x1+1))) = validaLigacao (x1+1,y1+1) b l
+                                  | elem (Bloco,(x1,y1+1)) l && (abs (y2 - y1) >= abs (y2 - (y1+1))) = validaLigacao (x1,y1+1) b l
+                                  | otherwise = False
