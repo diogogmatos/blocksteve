@@ -75,4 +75,15 @@ retiraCoordenadas ((p,(x,y)):t) = p : retiraCoordenadas t
 -- // --
 
 desconstroiMapa :: Mapa -> [(Peca, Coordenadas)]
-desconstroiMapa mapa = undefined
+desconstroiMapa [] = []
+desconstroiMapa mapa = filter aux (converte mapa 0)
+    where aux (p,(_,_)) = p /= Vazio
+
+converte :: Mapa -> Int -> [(Peca, Coordenadas)]
+converte [] _ = []
+converte (x:xs) acc = adicionaCoordenadas x 0 acc ++ converte xs (acc+1)
+
+adicionaCoordenadas :: [Peca] -> Int -> Int -> [(Peca, Coordenadas)]
+adicionaCoordenadas [] _ _ = []
+adicionaCoordenadas l@(x:xs) acc y = (x,(acc,y)) : adicionaCoordenadas xs (acc+1) y
+
