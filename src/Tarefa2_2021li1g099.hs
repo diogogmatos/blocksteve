@@ -55,8 +55,6 @@ listaVaziosX l@(a@(p,(x,y1)):t) acc y2 | acc <= xMax l = if ((elem (Bloco,(acc,y
                                                          else (Vazio,(acc,y2)) : listaVaziosX l (acc+1) y2
                                        | otherwise = []
 
-----
-
 -- Função 'parteLista'
 
 parteLista :: [(Peca, Coordenadas)] -> Int -> [[(Peca, Coordenadas)]]
