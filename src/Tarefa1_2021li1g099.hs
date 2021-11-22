@@ -134,7 +134,7 @@ validaChao l acc | not (elem (Bloco,(acc,yMax (filter aux1 l))) l) = False
                  where aux1 (_,(x,_)) = x == acc
                        aux2 (_,(x,_)) = x == acc+1
 
-{- | A função ’validaLigacao’. -}
+{- | A função ’validaLigacao’.  -}
 
 validaLigacao :: Coordenadas -> Coordenadas -> [(Peca,Coordenadas)] -> Bool
 validaLigacao (x1,y1) b@(x2,y2) l | (x1 == x2) && (y1 == y2) = True
