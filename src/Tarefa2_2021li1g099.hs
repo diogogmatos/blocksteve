@@ -14,6 +14,8 @@ import Tarefa1_2021li1g099
 
 {- | A função ’constroiMapa’ constroi um mapa a partir de uma lista de [(Peca, Coordenadas)] usando as funções 'formata', 'parteLista', 'adicionaVazios' e 'fundeIguais' 
 
+== Exemplos de utilização:
+
 >>>constroiMapa [(Porta, (0,2)), (Bloco, (0,3)), (Bloco, (1,3))]
 [[Vazio,Vazio],
  [Vazio,Vazio],
@@ -40,6 +42,8 @@ adicionaVazios l = organizaPecas (l ++ listaVazios l 0)
 --
 {- | A função ’organizaPecas’ organiza uma lista dependendo do valor das suas Coordenadas.
 
+== Exemplos de utilização:
+
 >>> organizaPecas [(Bloco, (1,6)), (Bloco, (1,4))]
 [(Bloco, (1,4)), (Bloco, (1,6))]
 -}
@@ -48,6 +52,8 @@ organizaPecas :: [(Peca,Coordenadas)] -> [(Peca,Coordenadas)]
 organizaPecas l = organizaPecasY (organizaPecasX l 0) 0
 
 {- | A função ’organizaPecasY’ organiza uma lista dependendo do seu valor Y (crescente). 
+
+== Exemplos de utilização:
 
 >>> organizaPecasY [(Bloco, (1,6)), (Bloco, (1,4)), (Bloco, (2,3)), (Bloco, (2,5))] 0
 [(Bloco,(2,3)), (Bloco,(1,4)), (Bloco,(2,5)), (Bloco,(1,6))]
@@ -60,6 +66,8 @@ organizaPecasY l acc | acc <= yMax l = (filter aux l) ++ organizaPecasY l (acc+1
 
 {- | A função ’organizaPecasX’ organiza uma lista dependendo do seu valor X (crescente). 
 
+== Exemplos de utilização:
+
 >>> organizaPecasY [(Bloco, (1,6)), (Bloco, (1,4)), (Bloco, (2,3)), (Bloco, (2,5))] 0
 [(Bloco,(1,6)),(Bloco,(1,4)),(Bloco,(2,3)),(Bloco,(2,5))]
 -}
@@ -70,6 +78,8 @@ organizaPecasX l acc | acc <= xMax l = (filter aux l) ++ organizaPecasX l (acc+1
                      where aux (_,(x,_)) = x == acc 
 
 {- | A função ’listaVazios’ cria uma lista do conjunto de peça Vazios do mapa. 
+
+== Exemplos de utilização:
 
 >>> listaVazios [(Bloco, (0,6))] 0
 [(Vazio,(0,0)),(Vazio,(0,1)),(Vazio,(0,2)),(Vazio,(0,3)),(Vazio,(0,4)),(Vazio,(0,5))]
@@ -89,6 +99,8 @@ listaVaziosX l@(a@(p,(x,y1)):t) acc y2 | acc <= xMax l = if ((elem (Bloco,(acc,y
 
 {- | A função ’parteLista’ parte uma lista em varias. 
 
+== Exemplos de utilização:
+
 >>> parteLista [(Bloco, (1,1)), (Bloco, (2,1))] 0
 [[],[(Bloco,(1,1)),(Bloco,(2,1))]]
 -}
@@ -106,6 +118,8 @@ formata (x:xs) = retiraCoordenadas x : formata xs
 
 {- | A função ’retiraCoordenadas’ remove de um conjunto [(Peca, Coordenadas)], as respetivas coordenadas.
 
+== Exemplos de utilização:
+
 >>> retiraCoordenadas [(Bloco,(1,2))]
 [Bloco]
 -}
@@ -117,6 +131,8 @@ retiraCoordenadas ((p,(x,y)):t) = p : retiraCoordenadas t
 -- // --
 
 {- | A função ’desconstroiMapa’ desconstroi listas de peças e adiciona Coordenadas as mesmas excluindo o tipo de peça Vazio. 
+
+== Exemplos de utilização:
 
 >>> desconstroiMapa [[Vazio,Vazio],[Vazio,Vazio],[Porta,Vazio],[Bloco,Bloco]]
 [(Porta,(0,2)),(Bloco,(0,3)),(Bloco,(1,3))]
@@ -134,6 +150,8 @@ converte [] _ = []
 converte (x:xs) acc = adicionaCoordenadas x 0 acc ++ converte xs (acc+1)
 
 {- | A função ’adicionaCoordenadas’ adiciona coordenadas a uma peça.
+
+== Exemplos de utilização:
 
 >>> adicionaCoordenadas [Bloco] 1 2
 [(Bloco,(1,2))]
