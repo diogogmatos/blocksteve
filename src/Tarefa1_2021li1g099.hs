@@ -123,7 +123,7 @@ False
 -}
 
 validaCaixas :: [(Peca,Coordenadas)] -> [(Peca,Coordenadas)] -> Bool
-validaCaixas [] _ = True
+validaCaixas [] _ = True -- se a lista é analisada até ser nula, não foram encontradas caixas inválidas - logo as caixas são válidas
 validaCaixas l1@((p,c):t) l2 | p == Caixa && not (on c l2) = False -- se 'on' não se verifica, significa que a caixa está numa posição inválida (False)
                              | p == Caixa && on c l2 = validaCaixas t l2 -- se a caixa está válida, então continua a procura por uma caixa inválida
                              | otherwise = validaCaixas t l2 -- se a peça não é "Caixa" então é ignorada
