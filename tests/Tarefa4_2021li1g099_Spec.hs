@@ -109,4 +109,8 @@ testsT4 =
     , "Tarefa 4 - Teste Valida Trepar" ~: validaTrepar m2 (Jogador (10,9) Oeste False) ~=? False
     , "Tarefa 4 - Teste moverJogador2" ~: Jogo m2r (Jogador (6,7) Oeste False) ~=? moveJogador m2e3 Trepar
     , "Tarefa 4 - Teste moverJogador2" ~: Jogo m2r (Jogador (10,9) Este False) ~=? moveJogador m2e4 InterageCaixa
+    , "Tarefa 4 - Teste Jogador na Borda do Mapa" ~: Jogo m2r (Jogador (0,1) Oeste False) ~=? moveJogador m2e5 AndarEsquerda
+    , "Tarefa 4 - Teste Jogador na Borda do Mapa" ~: Jogo m2r (Jogador (18,1) Este True) ~=? moveJogador m2e6 AndarDireita
+    , "Tarefa 4 - Teste Trepar com uma caixa em (x,1)" ~: Jogo m2r (Jogador (18,1) Oeste True) ~=? moveJogador m2e6 Trepar
+    , "Tarefa 4 - Teste Trepar com uma caixa em (x,1)" ~: validaTrepar m2 (Jogador (18,1) Oeste True) ~=? False
     ]
