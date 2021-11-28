@@ -14,6 +14,6 @@ testsT1 =
     , "Tarefa 1 - Teste Valida Mapa com uma caixa em cima de uma porta" ~: validaCaixas [(Porta, (1,1)), (Caixa, (1,2))] [(Porta, (1,1)), (Caixa, (1,2))] ~=? False
     , "Tarefa 1 - Teste Valida Mapa sem vazios" ~: validaVazios [(Bloco, (0,0)), (Bloco, (1,0)), (Bloco, (0,1)), (Caixa, (1,1))] ~=? False
     , "Tarefa 1 - Teste Valida Mapa sem chao" ~: validaPotencialMapa [(Bloco, (0,0)), (Bloco, (0,2))] ~=? False
-    , "Tarefa 1 - Teste Valida Mapa com chao como teto do mapa" ~: validaPotencialMapa [(Bloco, (0,0)), (Bloco, (1,0)), (Vazio,(0,1)), (Vazio,(1,1))] ~=? False
+    , "Tarefa 1 - Teste Valida Mapa com chao como teto do mapa" ~: validaPotencialMapa [(Bloco, (0,0)), (Bloco, (1,0)), (Bloco,(2,0)), (Porta,(1,1))] ~=? False
     , "Tarefa 1 - Teste Valida Mapa m2r" ~: validaPotencialMapa m2 ~=? True
     ]
