@@ -228,3 +228,9 @@ m2e3 = Jogo m2r (Jogador (7,8) Oeste False)
 
 m2e4 :: Jogo
 m2e4 = Jogo m2r (Jogador (10,9) Este False)
+
+m2e5 :: Jogo
+m2e5 = Jogo m2r (Jogador (0,1) Este False)
+
+m2e6 :: Jogo
+m2e6 = Jogo m2r (Jogador (18,1) Oeste True)
