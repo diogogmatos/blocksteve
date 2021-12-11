@@ -168,8 +168,8 @@ pequeno por 1 valor ( @(xD,yD-1)@ e @(xE,yE-1)@ ).
 posicaoQueda :: [(Peca,Coordenadas)] -> Jogador -> Movimento -> Coordenadas
 posicaoQueda m (Jogador (x1,y1) d b) mov | mov == AndarDireita = (xD,yD-1)
                                          | mov == AndarEsquerda = (xE,yE-1) 
-                                         where auxD (_,(x2,y2)) = (x2 == (x1+1)) && (y2 > y1)
-                                               auxE (_,(x2,y2)) = (x2 == (x1-1)) && (y2 > y1)
+                                         where auxD (p,(x2,y2)) = (x2 == (x1+1)) && (y2 > y1) && p /= Porta
+                                               auxE (p,(x2,y2)) = (x2 == (x1-1)) && (y2 > y1) && p /= Porta
                                                (_,(xD,yD)) = head (filter auxD m)
                                                (_,(xE,yE)) = head (filter auxE m)
 
