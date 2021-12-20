@@ -38,7 +38,7 @@ Esta função é também responsável por realizar a primeira alteração à lis
 
 fundeIguais :: [(Peca, Coordenadas)] -> [(Peca, Coordenadas)]
 fundeIguais [] = [] -- se a lista é vazia, significa que a função percorreu toda a lista e pode parar de ser chamada recursivamente - caso de paragem
-fundeIguais (x:xs) | elem x xs = fundeIguais xs -- se o elemento da cabeça da lista existir na cauda, será ignorado - o que resulta na eliminação do elemento repetido
+fundeIguais (x:xs) | x `elem` xs = fundeIguais xs -- se o elemento da cabeça da lista existir na cauda, será ignorado - o que resulta na eliminação do elemento repetido
                    | otherwise = x : fundeIguais xs -- se o elemento da cabeça da lista não exisitir na cauda, não está repetido, logo é mantido e a função continua a procura para o resto da lista
 
 {- | A função ’adicionaVazios’ adiciona à lista de pares '(Peca,Coordenadas)' as peças do tipo 'Vazio' não declaradas.
@@ -87,7 +87,7 @@ A lista é organizada de forma __crescente__.
 organizaPecasY :: [(Peca,Coordenadas)]
                -> Int -- ^ Input de um acumulador, de valor inicial 0, que tem como objetivo manter uma contagem crescente de __y__.
                -> [(Peca,Coordenadas)]
-organizaPecasY l acc | acc <= yMax l = (filter aux l) ++ organizaPecasY l (acc+1)
+organizaPecasY l acc | acc <= yMax l = filter aux l ++ organizaPecasY l (acc+1)
                      | otherwise = [] -- caso de paragem - a lista já foi toda percorrida
                      where aux (_,(_,y)) = y == acc -- a lista de peças com Y igual ao valor atual do acumulador é filtrada (filter aux l), isto é, a lista é organizada "linha a linha".
 
@@ -104,7 +104,7 @@ A lista é organizada de forma __crescente__.
 organizaPecasX :: [(Peca,Coordenadas)]
                -> Int -- ^ Input de um acumulador, de valor inicial 0, que tem como objetivo manter uma contagem crescente de __x__.
                -> [(Peca,Coordenadas)]
-organizaPecasX l acc | acc <= xMax l = (filter aux l) ++ organizaPecasX l (acc+1) -- para cada X (acc), aplica 'organizaPecasX' até atingir o valor máximo de X da lista (xMax l)
+organizaPecasX l acc | acc <= xMax l = filter aux l ++ organizaPecasX l (acc+1) -- para cada X (acc), aplica 'organizaPecasX' até atingir o valor máximo de X da lista (xMax l)
                      | otherwise = [] -- caso de paragem - a lista já foi toda percorrida
                      where aux (_,(x,_)) = x == acc -- a lista de peças com X igual ao valor atual do acumulador é filtrada (filter aux l), isto é, a lista é organizada "linha a linha".
 
@@ -140,7 +140,7 @@ O resultado é uma lista com todas as peças 'Vazio' e as respetivas coordenadas
  -}
 
 listaVaziosX :: [(Peca,Coordenadas)] -> Int -> Int -> [(Peca,Coordenadas)]
-listaVaziosX l@(a@(p,(x,y1)):t) acc y2 | acc <= xMax l = if ((elem (Bloco,(acc,y2)) l) || (elem (Caixa,(acc,y2)) l) || (elem (Porta,(acc,y2)) l) || (elem (Vazio,(acc,y2)) l))
+listaVaziosX l@(a@(p,(x,y1)):t) acc y2 | acc <= xMax l = if elem (Bloco,(acc,y2)) l || elem (Caixa,(acc,y2)) l || elem (Porta,(acc,y2)) l || (elem (Vazio,(acc,y2)) l)
                                                          then listaVaziosX l (acc+1) y2
                                                          else (Vazio,(acc,y2)) : listaVaziosX l (acc+1) y2
                                        | otherwise = [] -- caso de paragem - a lista já foi toda percorrida
@@ -163,7 +163,7 @@ Para isso, a função:
 parteLista :: [(Peca, Coordenadas)]
            -> Int -- ^ Input de um acumulador, de valor inicial 0, que tem como objetivo manter uma contagem crescente de __y__.
            -> [[(Peca, Coordenadas)]]
-parteLista l acc | acc <= yMax l = (filter aux l) : parteLista l (acc+1)
+parteLista l acc | acc <= yMax l = filter aux l : parteLista l (acc+1)
                  | otherwise = [] -- caso de paragem - a lista já foi toda percorrida
                  where aux (_,(_,y)) = y == acc -- filtragem da lista de acordo com o valor atual do acumulador
 
@@ -178,8 +178,7 @@ de sub-listas do tipo '[[Peca]]', ou seja, um 'Mapa'.
 -}
 
 formata :: [[(Peca, Coordenadas)]] -> Mapa
-formata [] = [] -- caso de paragem - a função já percorreu toda a lista
-formata (x:xs) = retiraCoordenadas x : formata xs -- aplica 'retiraCoordenadas' a cada sub-lista
+formata = map retiraCoordenadas
 
 {- | A função ’retiraCoordenadas’ remove as 'Coordenadas' de uma lista '[(Peca, Coordenadas)]'.
 

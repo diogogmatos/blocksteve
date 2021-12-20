@@ -94,8 +94,8 @@ reageMenu _ m = m
 
 drawMenu :: EstadoMenu -> Picture
 drawMenu (Menu o (title, jogartxt, jogartxts, sairtxt, sairtxts, background) s) =
-    if o == Jogar then Pictures $ [background] ++ [Translate 0 300 title, jogartxts, Translate 0 (-200) sairtxt]
-    else Pictures $ [background] ++ [Translate 0 300 title, jogartxt, Translate 0 (-200) sairtxts]
+    if o == Jogar then Pictures $ background : [Translate 0 300 title, jogartxts, Translate 0 (-200) sairtxt]
+    else Pictures $ background : [Translate 0 300 title, jogartxt, Translate 0 (-200) sairtxts]
 
 -- PAUSA --
 
@@ -116,8 +116,8 @@ reagePausa _ p = p
 
 drawPausa :: EstadoPausa -> Picture
 drawPausa (Pausa o (title, cont, conts, menu, menus, background) s) =
-    if o == Continuar then Pictures $ [background] ++ [Translate 0 280 title, Translate 50 (-100) conts, Translate 50 (-300) menu]
-    else Pictures $ [background] ++ [Translate 0 280 title, Translate 50 (-100) cont, Translate 50 (-300) menus]
+    if o == Continuar then Pictures $ background : [Translate 0 280 title, Translate 50 (-100) conts, Translate 50 (-300) menu]
+    else Pictures $ background : [Translate 0 280 title, Translate 50 (-100) cont, Translate 50 (-300) menus]
 
 -- JOGO --
 
@@ -133,24 +133,24 @@ world = [j1,j2,j3,j4]
 -- drawJogo --
 
 drawJogo :: EstadoJogo -> Picture
-drawJogo (n, nMax, v, j, ja, (p6,p7,p8,p9,p10,p11,p12,p13,p14,p20,p22), h) | h == False = Pictures $ [p22] ++ [drawJogo' (ja, (p6,p7,p8,p9,p10,p11,p12,p13,p14))]
+drawJogo (n, nMax, v, j, ja, (p6,p7,p8,p9,p10,p11,p12,p13,p14,p20,p22), h) | not h = Pictures $ p22 : [drawJogo' (ja, (p6,p7,p8,p9,p10,p11,p12,p13,p14))]
                                                                            | otherwise = p20
 
 drawJogo' :: (Jogo, TexturasJogo) -> Picture
-drawJogo' ((Jogo m j@(Jogador (x,y) d b)), t) = mapToPicture (desconstroiMapa m) j t
- 
+drawJogo' (Jogo m j@(Jogador (x,y) d b), t) = mapToPicture (desconstroiMapa m) j t
+
 mapToPicture :: [(Peca,Coordenadas)] -> Jogador -> TexturasJogo -> Picture
 mapToPicture m j t = translatemap m (Pictures (jogadorCaixa j t ++ pecasToPicture m m t))
 
 translatemap :: [(Peca,Coordenadas)] -> Picture -> Picture
-translatemap m p = Translate dx dy p
-    where dx = ((fromIntegral (xMax m)) * (-960)) / 30
-          dy = ((fromIntegral (yMax m)) * 540) / 17
+translatemap m = Translate dx dy
+    where dx = (fromIntegral (xMax m) * (-960)) / 30
+          dy = (fromIntegral (yMax m) * 540) / 17
 
 jogadorCaixa :: Jogador -> TexturasJogo -> [Picture]
 jogadorCaixa (Jogador (c,l) d b) (grass, dirt, box, boxe, boxmiddle, boxup, door, dudeE, dudeO)
-    | d == Este && b == True = [jEste, Translate (fromIntegral x) (fromIntegral y+64) box]
-    | d == Oeste && b == True = [jOeste, Translate (fromIntegral x) (fromIntegral y+64) box]
+    | d == Este && b = [jEste, Translate (fromIntegral x) (fromIntegral y+64) box]
+    | d == Oeste && b = [jOeste, Translate (fromIntegral x) (fromIntegral y+64) box]
     | d == Este = [jEste]
     | d == Oeste = [jOeste]
     where (x,y) = converteCoordenada (c,l)
@@ -177,26 +177,26 @@ converteCoordenada (x,y) = (x*64,(-y)*64)
 --
 
 reageJogo :: Event -> EstadoJogo -> EstadoJogo
-reageJogo (EventKey (SpecialKey KeyLeft) Down _ _) (n, nMax, v, j, ja, t, False) 
-    | (nextLevel n (moveJogador ja AndarEsquerda)) == nMax = (n, nMax, True, j, ja, t, False)
-    | n == (nextLevel n (moveJogador ja AndarEsquerda)) = (n, nMax, v, j, moveJogador ja AndarEsquerda, t, False)
+reageJogo (EventKey (SpecialKey KeyLeft) Down _ _) (n, nMax, v, j, ja, t, False)
+    | nextLevel n (moveJogador ja AndarEsquerda) == nMax = (n, nMax, True, j, ja, t, False)
+    | n == nextLevel n (moveJogador ja AndarEsquerda) = (n, nMax, v, j, moveJogador ja AndarEsquerda, t, False)
     | otherwise = (n+1, nMax, v, j, j !! (n+1), t, False)
 reageJogo (EventKey (SpecialKey KeyRight) Down _ _) (n, nMax, v, j, ja, t, False)
-    | (nextLevel n (moveJogador ja AndarDireita)) == nMax = (n, nMax, True, j, ja, t, False)
-    | n == (nextLevel n (moveJogador ja AndarDireita)) = (n, nMax, v, j, moveJogador ja AndarDireita, t, False)
+    | nextLevel n (moveJogador ja AndarDireita) == nMax = (n, nMax, True, j, ja, t, False)
+    | n == nextLevel n (moveJogador ja AndarDireita) = (n, nMax, v, j, moveJogador ja AndarDireita, t, False)
     | otherwise = (n+1, nMax, v, j, j !! (n+1), t, False)
 reageJogo (EventKey (SpecialKey KeyUp) Down _ _) (n, nMax, v, j, ja, t, False)
-    | (nextLevel n (moveJogador ja Trepar)) == nMax = (n, nMax, True, j, ja, t, False)
-    | n == (nextLevel n (moveJogador ja Trepar)) = (n, nMax, v, j, moveJogador ja Trepar, t, False)
+    | nextLevel n (moveJogador ja Trepar) == nMax = (n, nMax, True, j, ja, t, False)
+    | n == nextLevel n (moveJogador ja Trepar) = (n, nMax, v, j, moveJogador ja Trepar, t, False)
     | otherwise = (n+1, nMax, v, j, j !! (n+1), t, False)
 reageJogo (EventKey (SpecialKey KeyDown) Down _ _) (n, nMax, v, j, ja, t, False)
-    | (nextLevel n (moveJogador ja InterageCaixa)) == nMax = (n, nMax, True, j, ja, t, False)
-    | n == (nextLevel n (moveJogador ja InterageCaixa)) = (nextLevel n (moveJogador ja InterageCaixa), nMax, v, j, moveJogador ja InterageCaixa, t, False)
+    | nextLevel n (moveJogador ja InterageCaixa) == nMax = (n, nMax, True, j, ja, t, False)
+    | n == nextLevel n (moveJogador ja InterageCaixa) = (nextLevel n (moveJogador ja InterageCaixa), nMax, v, j, moveJogador ja InterageCaixa, t, False)
     | otherwise = (n+1, nMax, v, j, j !! (n+1), t, False)
 reageJogo (EventKey (Char 'r') Down _ _) (n, nMax, v, j, ja, t, h) = (n, nMax, v, j, world !! n, t, False)
 reageJogo (EventKey (Char 'a') Down _ _) (n, nMax, v, j, ja, t, h) = (n-1, nMax, v, j, world !! (n-1), t, h)
 reageJogo (EventKey (Char 'd') Down _ _) (n, nMax, v, j, ja, t, h) = (n+1, nMax, v, j, world !! (n+1), t, h)
-reageJogo (EventKey (Char 'h') Down _ _) (n, nMax, v, j, ja, t, h) = if h == False then (n, nMax, v, j, ja, t, True)
+reageJogo (EventKey (Char 'h') Down _ _) (n, nMax, v, j, ja, t, h) = if not h then (n, nMax, v, j, ja, t, True)
                                                                      else (n, nMax, v, j, ja, t, False)
 reageJogo _ j = j
 
