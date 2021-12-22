@@ -128,7 +128,7 @@ type TexturasJogo = (Picture, Picture, Picture, Picture, Picture, Picture, Pictu
 -- mapa --
 
 world :: [Jogo]
-world = [j1,j2,j3,j4]
+world = [j1,j2,j3,j4,j5,j6,j7,j8,j9,j10]
 
 -- drawJogo --
 
