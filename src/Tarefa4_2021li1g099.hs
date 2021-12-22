@@ -35,10 +35,10 @@ XXX
 -}
 
 moveJogador :: Jogo -> Movimento -> Jogo
-moveJogador jogo@(Jogo m jogador@(Jogador (x,y) d b)) mov | (mov == Trepar) && validaMovimento jogo mov = if (d == Este)
-                                                                                                          then (Jogo m (Jogador (x+1,y-1) d b))
-                                                                                                          else (Jogo m (Jogador (x-1,y-1) d b))
-                                                          | (mov == InterageCaixa) && validaMovimento jogo mov = interageCaixa (desconstroiMapa m) jogador
+moveJogador jogo@(Jogo m jogador@(Jogador (x,y) d b)) mov | mov == Trepar && validaMovimento jogo mov = if d == Este
+                                                                                                        then Jogo m (Jogador (x+1,y-1) d b)
+                                                                                                        else Jogo m (Jogador (x-1,y-1) d b)
+                                                          | mov == InterageCaixa && validaMovimento jogo mov = interageCaixa (desconstroiMapa m) jogador
                                                           | mov == AndarDireita = andarDireita (desconstroiMapa m) jogador
                                                           | mov == AndarEsquerda = andarEsquerda (desconstroiMapa m) jogador
                                                           | otherwise = Jogo m (Jogador (x,y) d b)
@@ -75,24 +75,24 @@ XXX
 -}
 
 interageCaixa :: [(Peca,Coordenadas)] -> Jogador -> Jogo
-interageCaixa m j@(Jogador (x,y) d b) | (d == Este) && (b == False) = (Jogo (constroiMapa (filter aux1 m)) (Jogador (x,y) d True)) -- caso (1.)
-                                      | (d == Oeste) && (b == False) = (Jogo (constroiMapa (filter aux2 m)) (Jogador (x,y) d True)) -- caso (1.)
-                                      | (d == Este) && notElemD = if ((elem (Bloco,(x+1,y)) m) || (elem (Caixa,(x+1,y)) m)) -- caso (3.) | Ver "Nota"
-                                                                  then (Jogo (constroiMapa ((Caixa,(x+1,y-1)) : m)) (Jogador (x,y) d False))
-                                                                  else (Jogo (constroiMapa ((Caixa,(posicaoQueda m j AndarDireita)) : m)) (Jogador (x,y) d False))
-                                      | (d == Oeste) && notElemE = if ((elem (Bloco,(x-1,y)) m) || (elem (Caixa,(x-1,y)) m)) -- caso (3.) | Ver "Nota"
-                                                                   then (Jogo (constroiMapa ((Caixa,(x-1,y-1)) : m)) (Jogador (x,y) d False))
-                                                                   else (Jogo (constroiMapa ((Caixa,(posicaoQueda m j AndarEsquerda)) : m)) (Jogador (x,y) d False))
-                                      | (d == Este) = if ((elem (Bloco,(x+1,y)) m) || (elem (Caixa,(x+1,y)) m)) -- caso (2.) | Ver "Nota"
-                                                      then (Jogo (constroiMapa ((Caixa,(x+1,y-1)) : m)) (Jogador (x,y) d False))
-                                                      else (Jogo (constroiMapa ((Caixa,(x+1,y)) : m)) (Jogador (x,y) d False))
-                                      | (d == Oeste) = if ((elem (Bloco,(x-1,y)) m) || (elem (Caixa,(x-1,y)) m)) -- caso (2.) | Ver "Nota"
-                                                       then (Jogo (constroiMapa ((Caixa,(x-1,y-1)) : m)) (Jogador (x,y) d False))
-                                                       else (Jogo (constroiMapa ((Caixa,(x-1,y)) : m)) (Jogador (x,y) d False))
+interageCaixa m j@(Jogador (x,y) d b) | d == Este && not b = Jogo (constroiMapa (filter aux1 m)) (Jogador (x,y) d True) -- caso (1.)
+                                      | d == Oeste && not b = Jogo (constroiMapa (filter aux2 m)) (Jogador (x,y) d True) -- caso (1.)
+                                      | d == Este && notElemD = if elem (Bloco,(x+1,y)) m || elem (Caixa,(x+1,y)) m -- caso (3.) | Ver "Nota"
+                                                                then Jogo (constroiMapa ((Caixa,(x+1,y-1)) : m)) (Jogador (x,y) d False)
+                                                                else Jogo (constroiMapa ((Caixa,posicaoQueda m j AndarDireita) : m)) (Jogador (x,y) d False)
+                                      | d == Oeste && notElemE = if elem (Bloco,(x-1,y)) m || elem (Caixa,(x-1,y)) m -- caso (3.) | Ver "Nota"
+                                                                 then Jogo (constroiMapa ((Caixa,(x-1,y-1)) : m)) (Jogador (x,y) d False)
+                                                                 else Jogo (constroiMapa ((Caixa,posicaoQueda m j AndarEsquerda) : m)) (Jogador (x,y) d False)
+                                      | d == Este = if elem (Bloco,(x+1,y)) m || elem (Caixa,(x+1,y)) m -- caso (2.) | Ver "Nota"
+                                                    then Jogo (constroiMapa ((Caixa,(x+1,y-1)) : m)) (Jogador (x,y) d False)
+                                                    else Jogo (constroiMapa ((Caixa,(x+1,y)) : m)) (Jogador (x,y) d False)
+                                      | d == Oeste = if elem (Bloco,(x-1,y)) m || elem (Caixa,(x-1,y)) m -- caso (2.) | Ver "Nota"
+                                                     then Jogo (constroiMapa ((Caixa,(x-1,y-1)) : m)) (Jogador (x,y) d False)
+                                                     else Jogo (constroiMapa ((Caixa,(x-1,y)) : m)) (Jogador (x,y) d False)
                                       where aux1 p = p /= (Caixa,(x+1,y))
                                             aux2 p = p /= (Caixa,(x-1,y))
-                                            notElemD = not ((elem (Bloco,(x+1,y+1)) m) || (elem (Caixa,(x+1,y+1)) m))
-                                            notElemE = not ((elem (Bloco,(x-1,y+1)) m) || (elem (Caixa,(x-1,y+1)) m))
+                                            notElemD = not (elem (Bloco,(x+1,y+1)) m || elem (Caixa,(x+1,y+1)) m)
+                                            notElemE = not (elem (Bloco,(x-1,y+1)) m || elem (Caixa,(x-1,y+1)) m)
 
 {- | A função ’andarDireita’ aplica o movimento __AndarDireita__ ao jogador.
 
@@ -114,10 +114,10 @@ XXX
 -}
 
 andarDireita :: [(Peca,Coordenadas)] -> Jogador -> Jogo
-andarDireita m j@(Jogador (x,y) d b) | validaAvancaDireita m j && notElem = (Jogo (constroiMapa m) (Jogador (posicaoQueda m j AndarDireita) Este b)) -- caso (3.) - existe queda
-                                     | validaAvancaDireita m j = (Jogo (constroiMapa m) (Jogador (x+1,y) Este b)) -- caso (3.) - não existe queda
-                                     | otherwise = (Jogo (constroiMapa m) (Jogador (x,y) Este b)) -- caso (2.)
-                                     where notElem = not ((elem (Bloco,(x+1,y+1)) m) || (elem (Caixa,(x+1,y+1)) m)) -- verifica se existe queda
+andarDireita m j@(Jogador (x,y) d b) | validaAvancaDireita m j && notElem = Jogo (constroiMapa m) (Jogador (posicaoQueda m j AndarDireita) Este b) -- caso (3.) - existe queda
+                                     | validaAvancaDireita m j = Jogo (constroiMapa m) (Jogador (x+1,y) Este b) -- caso (3.) - não existe queda
+                                     | otherwise = Jogo (constroiMapa m) (Jogador (x,y) Este b) -- caso (2.)
+                                     where notElem = not (elem (Bloco,(x+1,y+1)) m || elem (Caixa,(x+1,y+1)) m) -- verifica se existe queda
                                            (c1,c2) = posicaoQueda m j AndarDireita -- permite o acesso a cada coordenada do output de 'posicaoQueda'
 
 {- | A função ’andarEsquerda’ aplica o movimento __AndarEsquerda__ ao jogador, se o movimento não for possivel o jogador fica na mesma posição mas virado na posição Oeste.
@@ -140,10 +140,10 @@ XXX
 -}
 
 andarEsquerda :: [(Peca,Coordenadas)] -> Jogador -> Jogo
-andarEsquerda m j@(Jogador (x,y) d b) | validaAvancaEsquerda m j && notElem = (Jogo (constroiMapa m) (Jogador (posicaoQueda m j AndarEsquerda) Oeste b)) -- caso (3.) - existe queda
-                                      | validaAvancaEsquerda m j = (Jogo (constroiMapa m) (Jogador (x-1,y) Oeste b)) -- caso (3.) - não existe queda
-                                      | otherwise = (Jogo (constroiMapa m) (Jogador (x,y) Oeste b)) -- caso (2.)
-                                      where notElem = not ((elem (Bloco,(x-1,y+1)) m) || (elem (Caixa,(x-1,y+1)) m)) -- verifica se existe queda
+andarEsquerda m j@(Jogador (x,y) d b) | validaAvancaEsquerda m j && notElem = Jogo (constroiMapa m) (Jogador (posicaoQueda m j AndarEsquerda) Oeste b) -- caso (3.) - existe queda
+                                      | validaAvancaEsquerda m j = Jogo (constroiMapa m) (Jogador (x-1,y) Oeste b) -- caso (3.) - não existe queda
+                                      | otherwise = Jogo (constroiMapa m) (Jogador (x,y) Oeste b) -- caso (2.)
+                                      where notElem = not (elem (Bloco,(x-1,y+1)) m || elem (Caixa,(x-1,y+1)) m) -- verifica se existe queda
                                             (c1,c2) = posicaoQueda m j AndarEsquerda -- permite o acesso a cada coordenada do output de 'posicaoQueda'
 
 
@@ -167,9 +167,9 @@ pequeno por 1 valor ( @(xD,yD-1)@ e @(xE,yE-1)@ ).
 
 posicaoQueda :: [(Peca,Coordenadas)] -> Jogador -> Movimento -> Coordenadas
 posicaoQueda m (Jogador (x1,y1) d b) mov | mov == AndarDireita = (xD,yD-1)
-                                         | mov == AndarEsquerda = (xE,yE-1) 
-                                         where auxD (p,(x2,y2)) = (x2 == (x1+1)) && (y2 > y1) && p /= Porta
-                                               auxE (p,(x2,y2)) = (x2 == (x1-1)) && (y2 > y1) && p /= Porta
+                                         | mov == AndarEsquerda = (xE,yE-1)
+                                         where auxD (p,(x2,y2)) = x2 == x1+1 && y2 > y1 && p /= Porta
+                                               auxE (p,(x2,y2)) = x2 == x1-1 && y2 > y1 && p /= Porta
                                                (_,(xD,yD)) = head (filter auxD m)
                                                (_,(xE,yE)) = head (filter auxE m)
 
@@ -206,15 +206,15 @@ True
 
 validaTrepar :: [(Peca,Coordenadas)] -> Jogador -> Bool
 validaTrepar m (Jogador (x,y) d b) | y == 0 = False -- jogador na linha 0 do mapa - impossível trepar
-                                   | (b == True) && y == 1 = False -- jogador com uma caixa na linha 1 do mapa - impossível trepar (caixa fora do mapa)
-                                   | elem (Bloco,(x,y-1)) m = False -- existe um bloco por cima do jogador - impossível trepar
-                                   | (d == Este) && (b == True) && validEste && (not ((elem (Bloco,(x+1,y-2)) m) || (elem (Caixa,(x+1,y-2)) m))) = True -- o jogador carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Este
-                                   | (d == Oeste) && (b == True) && validOeste && (not ((elem (Bloco,(x-1,y-2)) m) || (elem (Caixa,(x-1,y-2)) m))) = True -- o jogador carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Oeste
-                                   | (d == Este) && (b == False) && validEste = True -- o jogador não carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Este
-                                   | (d == Oeste) && (b == False) && validOeste = True -- o jogador não carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Oeste
+                                   | b && y == 1 = False -- jogador com uma caixa na linha 1 do mapa - impossível trepar (caixa fora do mapa)
+                                   | (Bloco,(x,y-1)) `elem` m = False -- existe um bloco por cima do jogador - impossível trepar
+                                   | d == Este && b && validEste && not (elem (Bloco,(x+1,y-2)) m || elem (Caixa,(x+1,y-2)) m) = True -- o jogador carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Este
+                                   | d == Oeste && b && validOeste && not (elem (Bloco,(x-1,y-2)) m || elem (Caixa,(x-1,y-2)) m) = True -- o jogador carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Oeste
+                                   | d == Este && not b && validEste = True -- o jogador não carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Este
+                                   | d == Oeste && not b && validOeste = True -- o jogador não carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Oeste
                                    | otherwise = False -- não verifica as condições acima - Trepar inválido
-                                   where validEste = (((elem (Bloco,(x+1,y)) m) || (elem (Caixa,(x+1,y)) m)) && not ((elem (Bloco,(x+1,y-1)) m) || (elem (Caixa,(x+1,y-1)) m)))
-                                         validOeste = (((elem (Bloco,(x-1,y)) m) || (elem (Caixa,(x-1,y)) m)) && not ((elem (Bloco,(x-1,y-1)) m) || (elem (Caixa,(x-1,y-1)) m)))
+                                   where validEste = (elem (Bloco,(x+1,y)) m || elem (Caixa,(x+1,y)) m) && not (elem (Bloco,(x+1,y-1)) m || elem (Caixa,(x+1,y-1)) m)
+                                         validOeste = (elem (Bloco,(x-1,y)) m || elem (Caixa,(x-1,y)) m) && not (elem (Bloco,(x-1,y-1)) m || elem (Caixa,(x-1,y-1)) m)
 
 {- | A função ’validaInterageCaixa’ verifica se é possivel executar o movimento __InterageCaixa__. 
 
@@ -232,16 +232,16 @@ False
 
 validaInterageCaixa :: [(Peca,Coordenadas)] -> Jogador -> Bool
 validaInterageCaixa m (Jogador (x,y) d b) | y == 0 = False -- jogador na linha 0 do mapa - impossível pegar ou largar uma caixa
-                                          | (x == xMax m) && (d == Este) = False -- jogador voltado para a direita na última coluna do mapa - impossível pegar ou largar uma caixa
-                                          | (x == 0) && (d == Oeste) = False -- jogador voltado para a esquerda na primeira coluna do mapa - impossível pegar ou largar uma caixa
-                                          | elem (Bloco,(x,y-1)) m = False -- existe um bloco por cima do jogador - impossível interagir com caixas
-                                          | (d == Este) && (b == False) && (elem (Caixa,(x+1,y)) m) && notElemEste = True -- existe uma caixa válida para pegar e não existem obstáculos, à Direita
-                                          | (d == Oeste) && (b == False) && (elem (Caixa,(x-1,y)) m) && notElemOeste = True -- existe uma caixa válida para pegar e não existem obstáculos, à Esquerda
-                                          | (d == Este) && (b == True) && notElemEste = True -- existe um lugar válido para largar a caixa e não existem obstáculos, à Direita
-                                          | (d == Oeste) && (b == True) && notElemOeste = True -- existe um lugar válido para largar a caixa e não existem obstáculos, à Esquerda
+                                          | x == xMax m && d == Este = False -- jogador voltado para a direita na última coluna do mapa - impossível pegar ou largar uma caixa
+                                          | x == 0 && d == Oeste = False -- jogador voltado para a esquerda na primeira coluna do mapa - impossível pegar ou largar uma caixa
+                                          | (Bloco,(x,y-1)) `elem` m = False -- existe um bloco por cima do jogador - impossível interagir com caixas
+                                          | d == Este && not b && elem (Caixa,(x+1,y)) m && notElemEste = True -- existe uma caixa válida para pegar e não existem obstáculos, à Direita
+                                          | d == Oeste && not b && elem (Caixa,(x-1,y)) m && notElemOeste = True -- existe uma caixa válida para pegar e não existem obstáculos, à Esquerda
+                                          | d == Este && b && notElemEste = True -- existe um lugar válido para largar a caixa e não existem obstáculos, à Direita
+                                          | d == Oeste && b && notElemOeste = True -- existe um lugar válido para largar a caixa e não existem obstáculos, à Esquerda
                                           | otherwise = False -- não verifica as condições acima - InterageCaixa inválido
-                                          where notElemEste = not ((elem (Bloco,(x+1,y-1)) m) || (elem (Caixa,(x+1,y-1)) m))
-                                                notElemOeste = not ((elem (Bloco,(x-1,y-1)) m) || (elem (Caixa,(x-1,y-1)) m))
+                                          where notElemEste = not (elem (Bloco,(x+1,y-1)) m || elem (Caixa,(x+1,y-1)) m)
+                                                notElemOeste = not (elem (Bloco,(x-1,y-1)) m || elem (Caixa,(x-1,y-1)) m)
 
 --
 
@@ -260,10 +260,10 @@ False
 
 validaAvancaDireita :: [(Peca,Coordenadas)] -> Jogador -> Bool
 validaAvancaDireita m (Jogador (x,y) d b) | x == xMax m = False -- o jogador está na última coluna do mapa - impossível avançar para a direita
-                                          | (b == False) && notElem = True -- o jogador não carrega uma caixa e tem espaço para se movimentar
-                                          | (b == True) && notElem && not ((elem (Bloco,(x+1,y-1)) m) || (elem (Caixa,(x+1,y-1)) m)) = True -- o jogador carrega uma caixa e tem espaço para se movimentar
+                                          | not b && notElem = True -- o jogador não carrega uma caixa e tem espaço para se movimentar
+                                          | b && notElem && not (elem (Bloco,(x+1,y-1)) m || elem (Caixa,(x+1,y-1)) m) = True -- o jogador carrega uma caixa e tem espaço para se movimentar
                                           | otherwise = False -- não verifica as condições acima - impossível avançar para a direita
-                                          where notElem = not ((elem (Bloco,(x+1,y)) m)|| (elem (Caixa,(x+1,y)) m))
+                                          where notElem = not (elem (Bloco,(x+1,y)) m|| elem (Caixa,(x+1,y)) m)
 
 {- | A função ’validaAvancaEsquerda’ verifica se o jogador consegue, de facto, avançar um bloco para a esquerda quando é executado o movimento __AndarEsquerda__.
 
@@ -280,10 +280,10 @@ False
 
 validaAvancaEsquerda :: [(Peca,Coordenadas)] -> Jogador -> Bool
 validaAvancaEsquerda m (Jogador (x,y) d b) | x == 0 = False -- o jogador está na primeira coluna do mapa - impossível avançar para a esquerda
-                                           | (b == False) && notElem = True -- o jogador não carrega uma caixa e tem espaço para se movimentar
-                                           | (b == True) && notElem && not ((elem (Bloco,(x-1,y-1)) m) || (elem (Caixa,(x-1,y-1)) m)) = True -- o jogador carrega uma caixa e tem espaço para se movimentar
+                                           | not b && notElem = True -- o jogador não carrega uma caixa e tem espaço para se movimentar
+                                           | b && notElem && not (elem (Bloco,(x-1,y-1)) m || elem (Caixa,(x-1,y-1)) m) = True -- o jogador carrega uma caixa e tem espaço para se movimentar
                                            | otherwise = False -- não verifica as condições acima - impossível avançar para a esquerda
-                                           where notElem = not ((elem (Bloco,(x-1,y)) m) || (elem (Caixa,(x-1,y)) m))
+                                           where notElem = not (elem (Bloco,(x-1,y)) m || elem (Caixa,(x-1,y)) m)
 
 --
 
@@ -297,5 +297,4 @@ XXX
 -}
 
 correrMovimentos :: Jogo -> [Movimento] -> Jogo
-correrMovimentos jogo [] = jogo -- caso de paragem - a função já percorreu todos os movimentos
-correrMovimentos jogo (m:ms) = correrMovimentos (moveJogador jogo m) ms
+correrMovimentos = foldl moveJogador
