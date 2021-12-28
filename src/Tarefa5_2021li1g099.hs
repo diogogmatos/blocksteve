@@ -55,7 +55,9 @@ main = do
     Just p34 <- loadJuicy "imagens/n10.png"
     Just p35 <- loadJuicy "imagens/botRight.png"
     Just p36 <- loadJuicy "imagens/botLeft.png"
-    play janela white fr (estadoInicial (p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24,p25,p26,p27,p28,p29,p30,p31,p32,p33,p34,p35,p36)) draw reage reageTempo
+    Just p37 <- loadJuicy "imagens/botErrorRight.png"
+    Just p38 <- loadJuicy "imagens/botErrorLeft.png"
+    play janela white fr (estadoInicial (p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24,p25,p26,p27,p28,p29,p30,p31,p32,p33,p34,p35,p36,p37,p38)) draw reage reageTempo
 
 fr = 2
 janela = FullScreen
@@ -66,17 +68,19 @@ type Texturas = (Picture, Picture, Picture, Picture, Picture, Picture, Picture,
                  Picture, Picture, Picture, Picture, Picture, Picture, Picture,
                  Picture, Picture, Picture, Picture, Picture, Picture, Picture,
                  Picture, Picture, Picture, Picture, Picture, Picture, Picture,
-                 Picture)
+                 Picture, Picture, Picture)
 
 estadoInicial :: Texturas -> Estado
-estadoInicial (p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24,p25,p26,p27,p28,p29,p30,p31,p32,p33,p34,p35,p36) =
+estadoInicial (p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24,p25,p26,p27,p28,p29,p30,p31,p32,p33,p34,p35,p36,p37,p38) =
     E
     (Menu Jogar (p1,p2,p3,p4,p5,p21,p23,p24) False)
-    (0, length world, False, world, j1, (p6,p7,p8,p9,p10,p11,p12,p13,p14,p20,p22,p35,p36), False, (1,1), Bot False Nothing)
+    (0, length world, False, world, j1, (p6,p7,p8,p9,p10,p11,p12,p13,p14,p20,p22,p35,p36,p37,p38), False, (1,1), Bot False Nothing)
     (Pausa Continuar (p15,p16,p17,p18,p19,p21) True)
     (Nivel 1 False (p25,p26,p27,p28,p29,p30,p31,p32,p33,p34))
 
 reage :: Event -> Estado -> Estado
+reage e (E em (r1,r2,r3,r4,r5,r6,r7,r8,Bot True Nothing) ep en) =
+    E em (r1,r2,r3,r4,r5,r6,r7,r8,Bot False Nothing) ep en
 reage (EventKey (Char 'b') Down _ _) (E em@(Menu Jogar _ True) (n,nMax,v,j,ja,t,h,(s1,s2),Bot False Nothing) ep@(Pausa Continuar _ True) en) =
     reageTempo 1 (E em (n,nMax,v,j,ja,t,h,(s1,s2),Bot True (resolveJogo 10 ja)) ep en)
 reage (EventKey (Char 'b') Down _ _) (E em@(Menu Jogar _ True) (n,nMax,v,j,ja,t,h,(s1,s2),Bot True _) ep@(Pausa Continuar _ True) en) =
@@ -193,9 +197,9 @@ drawPausa (Pausa o (title, cont, conts, menu, menus, background) s)
 
 type EstadoJogo = (Int, Int, Bool, [Jogo], Jogo, ElementosJogo, Bool, (Float,Float), Bot)
 
-type ElementosJogo = (Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture)
+type ElementosJogo = (Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture)
 
-type TexturasJogo = (Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture)
+type TexturasJogo = (Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture, Picture)
 
 -- mapa --
 
@@ -249,41 +253,39 @@ giveCoordinates (p,c) = c
 -- drawJogo --
 
 drawJogo :: EstadoJogo -> Picture
-drawJogo (n, nMax, v, j, ja, (p6,p7,p8,p9,p10,p11,p12,p13,p14,p20,p22,p35,p36), h, (s1,s2), Bot b _)
-    | not h = Pictures $ p22 : [Scale s1 s2 $ drawJogo' (ja, (p6,p7,p8,p9,p10,p11,p12,p13,p14,p35,p36), b)]
+drawJogo (n, nMax, v, j, ja, (p6,p7,p8,p9,p10,p11,p12,p13,p14,p20,p22,p35,p36,p37,p38), h, (s1,s2), Bot b l)
+    | not h && b && (l == Nothing) = Pictures $ p22 : [Scale s1 s2 $ drawJogo' (ja, (p6,p7,p8,p9,p10,p11,p12,p37,p38))]
+    | not h && b = Pictures $ p22 : [Scale s1 s2 $ drawJogo' (ja, (p6,p7,p8,p9,p10,p11,p12,p35,p36))]
+    | not h = Pictures $ p22 : [Scale s1 s2 $ drawJogo' (ja, (p6,p7,p8,p9,p10,p11,p12,p13,p14))]
     | otherwise = p20
 
-drawJogo' :: (Jogo, TexturasJogo, Bool) -> Picture
-drawJogo' (Jogo m j@(Jogador (x,y) d b), t, bot) = mapToPicture (desconstroiMapa m) j t bot
+drawJogo' :: (Jogo, TexturasJogo) -> Picture
+drawJogo' (Jogo m j@(Jogador (x,y) d b), t) = mapToPicture (desconstroiMapa m) j t
 
-mapToPicture :: [(Peca,Coordenadas)] -> Jogador -> TexturasJogo -> Bool -> Picture
-mapToPicture m j t b = translatemap m (Pictures (jogadorCaixa j t b ++ pecasToPicture m m t))
+mapToPicture :: [(Peca,Coordenadas)] -> Jogador -> TexturasJogo -> Picture
+mapToPicture m j t = translatemap m (Pictures (jogadorCaixa j t ++ pecasToPicture m m t))
 
 translatemap :: [(Peca,Coordenadas)] -> Picture -> Picture
 translatemap m = Translate dx dy
     where dx = (fromIntegral (xMax m) * (-960)) / 30
           dy = (fromIntegral (yMax m) * 540) / 17
 
-jogadorCaixa :: Jogador -> TexturasJogo -> Bool -> [Picture]
-jogadorCaixa (Jogador (c,l) d b) (grass, dirt, box, boxe, boxmiddle, boxup, door, dudeE, dudeO, botE, botO) bot
+jogadorCaixa :: Jogador -> TexturasJogo -> [Picture]
+jogadorCaixa (Jogador (c,l) d b) (grass, dirt, box, boxe, boxmiddle, boxup, door, dudeE, dudeO)
     | d == Este && b = [jEste, Translate (fromIntegral x) (fromIntegral y+64) box]
     | d == Oeste && b = [jOeste, Translate (fromIntegral x) (fromIntegral y+64) box]
     | d == Este = [jEste]
     | d == Oeste = [jOeste]
     where (x,y) = converteCoordenada (c,l)
-          jEste = if bot
-                  then Translate (fromIntegral x) (fromIntegral y) botE
-                  else Translate (fromIntegral x) (fromIntegral y) dudeE
-          jOeste = if bot
-                   then Translate (fromIntegral x) (fromIntegral y) botO
-                   else Translate (fromIntegral x) (fromIntegral y) dudeO
+          jEste = Translate (fromIntegral x) (fromIntegral y) dudeE
+          jOeste = Translate (fromIntegral x) (fromIntegral y) dudeO
 
 pecasToPicture :: [(Peca,Coordenadas)] -> [(Peca,Coordenadas)] -> TexturasJogo -> [Picture]
 pecasToPicture [] _ _ = []
 pecasToPicture (x:xs) m t = pecaToPicture x t m : pecasToPicture xs m t
 
 pecaToPicture :: (Peca,Coordenadas) -> TexturasJogo -> [(Peca,Coordenadas)] -> Picture
-pecaToPicture (p,(c,l)) (grass, dirt, box, boxe, boxmiddle, boxup, door, _, _, _, _) m
+pecaToPicture (p,(c,l)) (grass, dirt, box, boxe, boxmiddle, boxup, door, _, _) m
     | p == Bloco = if elem (Bloco,(c,l-1)) m then Translate (fromIntegral x) (fromIntegral y) dirt else Translate (fromIntegral x) (fromIntegral y) grass
     | p == Caixa = if (elem (Caixa,(c,l+1)) m) && (elem (Caixa,(c,l-1)) m) then Translate (fromIntegral x) (fromIntegral y) boxmiddle
                    else if elem (Caixa,(c,l-1)) m then Translate (fromIntegral x) (fromIntegral y) boxe
@@ -315,5 +317,5 @@ reageTempo _ (E em ej@(n,nMax,v,j,ja,t,h,(s1,s2),Bot True (Just (m:ms))) ep en)
                            else E em (reageJogo (EventKey (SpecialKey KeyDown) Down a b) (n,nMax,v,j,ja,t,h,(s1,s2),Bot True (Just ms))) ep en
     | otherwise = E em ej ep en
     where a = Modifiers Down Down Down
-          b = (1,1)  
+          b = (1,1)
 reageTempo _ e = e
