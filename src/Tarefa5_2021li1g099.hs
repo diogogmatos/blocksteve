@@ -232,8 +232,6 @@ reageJogo (EventKey (Char '-') Down _ _) (n, nMax, v, j, ja, t, h, (s1,s2), b)
     | s1 <= 0.6 = (n, nMax, v, j, ja, t, h, (s1,s2), b)
     | otherwise = (n, nMax, v, j, ja, t, h, (s1-0.1,s2-0.1), b)                         
 reageJogo (EventKey (Char 'r') Down _ _) (n, nMax, v, j, ja, t, h, (s1,s2), b) = (n, nMax, v, j, world !! n, t, False, (s1,s2), b)
-reageJogo (EventKey (Char 'a') Down _ _) (n, nMax, v, j, ja, t, h, (s1,s2), b) = (n-1, nMax, v, j, world !! (n-1), t, h, (s1,s2), b)
-reageJogo (EventKey (Char 'd') Down _ _) (n, nMax, v, j, ja, t, h, (s1,s2), b) = (n+1, nMax, v, j, world !! (n+1), t, h, (s1,s2), b)
 reageJogo (EventKey (Char 'h') Down _ _) (n, nMax, v, j, ja, t, h, (s1,s2), b) = if not h
                                                                                  then (n, nMax, v, j, ja, t, True, (s1,s2), b)
                                                                                  else (n, nMax, v, j, ja, t, False, (s1,s2), b)
