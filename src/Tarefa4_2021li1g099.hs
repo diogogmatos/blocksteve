@@ -176,7 +176,7 @@ posicaoQueda m (Jogador (x1,y1) d b) mov | mov == AndarDireita = (xD,yD-1)
 --
 
 {- | A função ’validaMovimento’ irá validar os movimentos __Trepar__ ou __InterageCaixa__ recorrendo ás funções 'validaTrepar' e 'validaInterageCaixa',
-respetivamente.
+respetivamente. Verifica ainda a ocorrência de casos específicos onde o movimento é inválido independentemente do seu tipo.
 
 - __Nota:__ As funções auxiliares 'validaTrepar' e 'validaInterageCaixa' recebem o mapa não no formato 'Mapa' mas no formato de uma lista
 do tipo __[(Peca,Coordeandas)]__, de forma a facilitar o processo. Assim, é usada a função 'desconstroiMapa' (importada da Tarefa 2) para transformar 'Mapa'.
@@ -184,8 +184,13 @@ do tipo __[(Peca,Coordeandas)]__, de forma a facilitar o processo. Assim, é usa
 -}
 
 validaMovimento :: Jogo -> Movimento -> Bool
-validaMovimento (Jogo mapa jogador) m | m == Trepar = validaTrepar (desconstroiMapa mapa) jogador
-                                      | m == InterageCaixa = validaInterageCaixa (desconstroiMapa mapa) jogador
+validaMovimento (Jogo mapa jogador@(Jogador (x,y) d b)) m
+      | y == 0 = False -- jogador na linha 0 do mapa - impossível trepar ou interagir
+      | x == xMax mapaC && d == Este = False -- jogador voltado para a direita na última coluna do mapa - impossível trepar ou interagir
+      | x == 0 && d == Oeste = False -- jogador voltado para a esquerda na primeira coluna do mapa - impossível trepar ou interagir
+      | m == Trepar = validaTrepar mapaC jogador
+      | m == InterageCaixa = validaInterageCaixa mapaC jogador
+      where mapaC = (desconstroiMapa mapa)
 
 {- | A função ’validaTrepar’ verifica se é possivel executar o movimento __Trepar__. 
 
@@ -205,16 +210,17 @@ True
 -}
 
 validaTrepar :: [(Peca,Coordenadas)] -> Jogador -> Bool
-validaTrepar m (Jogador (x,y) d b) | y == 0 = False -- jogador na linha 0 do mapa - impossível trepar
-                                   | b && y == 1 = False -- jogador com uma caixa na linha 1 do mapa - impossível trepar (caixa fora do mapa)
-                                   | (Bloco,(x,y-1)) `elem` m = False -- existe um bloco por cima do jogador - impossível trepar
-                                   | d == Este && b && validEste && not (elem (Bloco,(x+1,y-2)) m || elem (Caixa,(x+1,y-2)) m) = True -- o jogador carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Este
-                                   | d == Oeste && b && validOeste && not (elem (Bloco,(x-1,y-2)) m || elem (Caixa,(x-1,y-2)) m) = True -- o jogador carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Oeste
-                                   | d == Este && not b && validEste = True -- o jogador não carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Este
-                                   | d == Oeste && not b && validOeste = True -- o jogador não carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Oeste
-                                   | otherwise = False -- não verifica as condições acima - Trepar inválido
-                                   where validEste = (elem (Bloco,(x+1,y)) m || elem (Caixa,(x+1,y)) m) && not (elem (Bloco,(x+1,y-1)) m || elem (Caixa,(x+1,y-1)) m)
-                                         validOeste = (elem (Bloco,(x-1,y)) m || elem (Caixa,(x-1,y)) m) && not (elem (Bloco,(x-1,y-1)) m || elem (Caixa,(x-1,y-1)) m)
+validaTrepar m (Jogador (x,y) d b)
+      | b && y == 1 = False -- jogador com uma caixa na linha 1 do mapa - impossível trepar (caixa fora do mapa)
+      | b && (Bloco,(x,y-2)) `elem` m = False -- jogador com uma caixa e com um bloco acima dessa mesma caixa - impossível trepar
+      | (Bloco,(x,y-1)) `elem` m = False -- existe um bloco por cima do jogador - impossível trepar
+      | d == Este && b && validEste && not (elem (Bloco,(x+1,y-2)) m || elem (Caixa,(x+1,y-2)) m) = True -- o jogador carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Este
+      | d == Oeste && b && validOeste && not (elem (Bloco,(x-1,y-2)) m || elem (Caixa,(x-1,y-2)) m) = True -- o jogador carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Oeste
+      | d == Este && not b && validEste = True -- o jogador não carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Este
+      | d == Oeste && not b && validOeste = True -- o jogador não carrega uma caixa, existe um bloco para trepar e tem espaço para o trepar, na direção Oeste
+      | otherwise = False -- não verifica as condições acima - Trepar inválido
+      where validEste = (elem (Bloco,(x+1,y)) m || elem (Caixa,(x+1,y)) m) && not (elem (Bloco,(x+1,y-1)) m || elem (Caixa,(x+1,y-1)) m)
+            validOeste = (elem (Bloco,(x-1,y)) m || elem (Caixa,(x-1,y)) m) && not (elem (Bloco,(x-1,y-1)) m || elem (Caixa,(x-1,y-1)) m)
 
 {- | A função ’validaInterageCaixa’ verifica se é possivel executar o movimento __InterageCaixa__. 
 
@@ -231,17 +237,15 @@ False
 -}
 
 validaInterageCaixa :: [(Peca,Coordenadas)] -> Jogador -> Bool
-validaInterageCaixa m (Jogador (x,y) d b) | y == 0 = False -- jogador na linha 0 do mapa - impossível pegar ou largar uma caixa
-                                          | x == xMax m && d == Este = False -- jogador voltado para a direita na última coluna do mapa - impossível pegar ou largar uma caixa
-                                          | x == 0 && d == Oeste = False -- jogador voltado para a esquerda na primeira coluna do mapa - impossível pegar ou largar uma caixa
-                                          | (Bloco,(x,y-1)) `elem` m = False -- existe um bloco por cima do jogador - impossível interagir com caixas
-                                          | d == Este && not b && elem (Caixa,(x+1,y)) m && notElemEste = True -- existe uma caixa válida para pegar e não existem obstáculos, à Direita
-                                          | d == Oeste && not b && elem (Caixa,(x-1,y)) m && notElemOeste = True -- existe uma caixa válida para pegar e não existem obstáculos, à Esquerda
-                                          | d == Este && b && notElemEste = True -- existe um lugar válido para largar a caixa e não existem obstáculos, à Direita
-                                          | d == Oeste && b && notElemOeste = True -- existe um lugar válido para largar a caixa e não existem obstáculos, à Esquerda
-                                          | otherwise = False -- não verifica as condições acima - InterageCaixa inválido
-                                          where notElemEste = not (elem (Bloco,(x+1,y-1)) m || elem (Caixa,(x+1,y-1)) m)
-                                                notElemOeste = not (elem (Bloco,(x-1,y-1)) m || elem (Caixa,(x-1,y-1)) m)
+validaInterageCaixa m (Jogador (x,y) d b)
+      | (Bloco,(x,y-1)) `elem` m = False -- existe um bloco por cima do jogador - impossível interagir com caixas
+      | d == Este && not b && elem (Caixa,(x+1,y)) m && notElemEste = True -- existe uma caixa válida para pegar e não existem obstáculos, à Direita
+      | d == Oeste && not b && elem (Caixa,(x-1,y)) m && notElemOeste = True -- existe uma caixa válida para pegar e não existem obstáculos, à Esquerda
+      | d == Este && b && notElemEste = True -- existe um lugar válido para largar a caixa e não existem obstáculos, à Direita
+      | d == Oeste && b && notElemOeste = True -- existe um lugar válido para largar a caixa e não existem obstáculos, à Esquerda
+      | otherwise = False -- não verifica as condições acima - InterageCaixa inválido
+      where notElemEste = not (elem (Bloco,(x+1,y-1)) m || elem (Caixa,(x+1,y-1)) m)
+            notElemOeste = not (elem (Bloco,(x-1,y-1)) m || elem (Caixa,(x-1,y-1)) m)
 
 --
 
