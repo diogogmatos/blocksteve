@@ -230,7 +230,7 @@ reageJogo (EventKey (Char '+') Down _ _) (n, nMax, v, j, ja, t, h, (s1,s2), b)
     | otherwise = (n, nMax, v, j, ja, t, h, (s1+0.1,s2+0.1), b)
 reageJogo (EventKey (Char '-') Down _ _) (n, nMax, v, j, ja, t, h, (s1,s2), b)
     | s1 <= 0.6 = (n, nMax, v, j, ja, t, h, (s1,s2), b)
-    | otherwise = (n, nMax, v, j, ja, t, h, (s1-0.1,s2-0.1), b)                         
+    | otherwise = (n, nMax, v, j, ja, t, h, (s1-0.1,s2-0.1), b)
 reageJogo (EventKey (Char 'r') Down _ _) (n, nMax, v, j, ja, t, h, (s1,s2), b) = (n, nMax, v, j, world !! n, t, False, (s1,s2), b)
 reageJogo (EventKey (Char 'h') Down _ _) (n, nMax, v, j, ja, t, h, (s1,s2), b) = if not h
                                                                                  then (n, nMax, v, j, ja, t, True, (s1,s2), b)
@@ -301,16 +301,16 @@ data Bot = Bot Bool (Maybe [Movimento])
 
 reageTempo :: Float -> Estado -> Estado
 reageTempo _ (E em ej@(n,nMax,v,j,ja,t,h,(s1,s2),Bot True (Just (m:ms))) ep en)
-    | m == AndarDireita = if ms == []
+    | m == AndarDireita = if null ms
                           then E em (reageJogo (EventKey (SpecialKey KeyRight) Down a b) (n,nMax,v,j,ja,t,h,(s1,s2),Bot False Nothing)) ep en
                           else E em (reageJogo (EventKey (SpecialKey KeyRight) Down a b) (n,nMax,v,j,ja,t,h,(s1,s2),Bot True (Just ms))) ep en
-    | m == AndarEsquerda = if ms == []
+    | m == AndarEsquerda = if null ms
                            then E em (reageJogo (EventKey (SpecialKey KeyLeft) Down a b) (n,nMax,v,j,ja,t,h,(s1,s2),Bot False Nothing)) ep en
                            else E em (reageJogo (EventKey (SpecialKey KeyLeft) Down a b) (n,nMax,v,j,ja,t,h,(s1,s2),Bot True (Just ms))) ep en
-    | m == Trepar = if ms == []
+    | m == Trepar = if null ms
                     then E em (reageJogo (EventKey (SpecialKey KeyUp) Down a b) (n,nMax,v,j,ja,t,h,(s1,s2),Bot False Nothing)) ep en
                     else E em (reageJogo (EventKey (SpecialKey KeyUp) Down a b) (n,nMax,v,j,ja,t,h,(s1,s2),Bot True (Just ms))) ep en
-    | m == InterageCaixa = if ms == []
+    | m == InterageCaixa = if null ms
                            then E em (reageJogo (EventKey (SpecialKey KeyDown) Down a b) (n,nMax,v,j,ja,t,h,(s1,s2),Bot False Nothing)) ep en
                            else E em (reageJogo (EventKey (SpecialKey KeyDown) Down a b) (n,nMax,v,j,ja,t,h,(s1,s2),Bot True (Just ms))) ep en
     | otherwise = E em ej ep en
