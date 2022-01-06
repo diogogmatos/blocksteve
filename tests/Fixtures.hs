@@ -102,7 +102,7 @@ m2 =
     (Bloco,(18,3)),
     (Bloco,(18,4)),
     (Bloco,(18,5))
-   ]
+  ]
 
 m2TesteInterageCaixa :: [(Peca, Coordenadas)]
 m2TesteInterageCaixa =
@@ -180,7 +180,7 @@ m2TesteInterageCaixa =
     (Bloco,(18,3)),
     (Bloco,(18,4)),
     (Bloco,(18,5))
-   ]
+  ]
 
 m2r :: Mapa
 m2r = [ [Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio],
@@ -193,8 +193,7 @@ m2r = [ [Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio
         [Bloco,Vazio,Bloco,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Vazio,Bloco,Bloco,Bloco,Bloco,Bloco,Vazio,Vazio],
         [Bloco,Vazio,Bloco,Vazio,Bloco,Caixa,Caixa,Vazio,Bloco,Bloco,Vazio,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio],
         [Bloco,Porta,Bloco,Vazio,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Vazio,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio],
-        [Bloco,Bloco,Bloco,Vazio,Bloco,Bloco,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio]
-      ]
+        [Bloco,Bloco,Bloco,Vazio,Bloco,Bloco,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio]]
 
 m2RTesteInterageCaixa :: Mapa
 m2RTesteInterageCaixa = [ [Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio],
@@ -207,9 +206,13 @@ m2RTesteInterageCaixa = [ [Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio
                           [Bloco,Vazio,Bloco,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Vazio,Bloco,Bloco,Bloco,Bloco,Bloco,Vazio,Vazio],
                           [Bloco,Vazio,Bloco,Vazio,Bloco,Caixa,Caixa,Vazio,Bloco,Bloco,Vazio,Caixa,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio],
                           [Bloco,Porta,Bloco,Vazio,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Vazio,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio],
-                          [Bloco,Bloco,Bloco,Vazio,Bloco,Bloco,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio]
-      ]
+                          [Bloco,Bloco,Bloco,Vazio,Bloco,Bloco,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio]]
 
+m3r :: Mapa
+m3r = [ [Vazio,Vazio,Bloco,Vazio],
+        [Vazio,Vazio,Vazio,Vazio],
+        [Vazio,Bloco,Vazio,Vazio],
+        [Bloco,Bloco,Bloco,Bloco]]
 
 m1e1 :: Jogo
 m1e1 = Jogo m1r (Jogador (6, 0) Oeste False)
@@ -234,3 +237,12 @@ m2e5 = Jogo m2r (Jogador (0,1) Este False)
 
 m2e6 :: Jogo
 m2e6 = Jogo m2r (Jogador (18,1) Oeste True)
+
+m2e7 :: Jogo
+m2e7 = Jogo m2r (Jogador (0,1) Oeste False)
+
+m2e8 :: Jogo
+m2e8 = Jogo m2r (Jogador (18,1) Este True)
+
+m3e1 :: Jogo
+m3e1 = Jogo m3r (Jogador (2,2) Oeste True)
