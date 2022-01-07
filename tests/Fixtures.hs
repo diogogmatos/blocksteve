@@ -1,6 +1,11 @@
 module Fixtures where
 
 import LI12122
+import ListaJogos
+import Tarefa1_2021li1g099
+import Tarefa2_2021li1g099
+import Tarefa4_2021li1g099
+import Tarefa6_2021li1g099
 
 m1 :: [(Peca, Coordenadas)]
 m1 =
@@ -246,3 +251,38 @@ m2e8 = Jogo m2r (Jogador (18,1) Este True)
 
 m3e1 :: Jogo
 m3e1 = Jogo m3r (Jogador (2,2) Oeste True)
+
+
+je1 :: Mapa
+je1 = [[Vazio,Vazio,Vazio,Vazio,Vazio],
+       [Porta,Vazio,Vazio,Vazio,Vazio],
+       [Bloco,Bloco,Bloco,Bloco,Bloco]]
+      
+je2 :: [(Peca,Coordenadas)]
+je2 = [(Porta,(0,1)),(Bloco,(0,2)),(Bloco,(1,2)),(Bloco,(2,2)),(Bloco,(3,2)),(Bloco,(4,2))]
+
+jt1 :: Mapa
+jt1 = [[Vazio,Vazio,Vazio,Vazio,Vazio],
+       [Porta,Vazio,Bloco,Vazio,Vazio],
+       [Bloco,Bloco,Bloco,Bloco,Bloco]]
+      
+jt2 :: [(Peca,Coordenadas)]
+jt2 = [(Porta,(0,1)),(Bloco,(2,1)),(Bloco,(0,2)),(Bloco,(1,2)),(Bloco,(2,2)),(Bloco,(3,2)),(Bloco,(4,2))]
+
+jl1 :: Mapa
+jl1 = [[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],
+      [Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],
+      [Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],
+      [Bloco,Vazio,Vazio,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],
+      [Bloco,Porta,Vazio,Vazio,Bloco,Vazio,Vazio,Vazio,Bloco,Vazio,Caixa,Vazio,Bloco,Caixa,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],
+      [Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco]]
+
+j1e1 :: Jogo
+j1e1 = Jogo jl1 (Jogador (1,4) Oeste False)
+
+nextLevel :: Int -> Jogo -> Int
+nextLevel n (Jogo m (Jogador (x1,y1) _ _)) | x1 == x2 && y1 == y2 = n+1
+                                           | otherwise = n
+                                           where aux (p,(_,_)) = p == Porta
+                                                 (x2,y2) = giveCoordinates $ head $ filter aux $ desconstroiMapa m
+                                                 giveCoordinates (p,c) = c
