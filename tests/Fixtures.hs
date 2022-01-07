@@ -2,10 +2,6 @@ module Fixtures where
 
 import LI12122
 import ListaJogos
-import Tarefa1_2021li1g099
-import Tarefa2_2021li1g099
-import Tarefa4_2021li1g099
-import Tarefa6_2021li1g099
 
 m1 :: [(Peca, Coordenadas)]
 m1 =
@@ -279,10 +275,3 @@ jl1 = [[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,
 
 j1e1 :: Jogo
 j1e1 = Jogo jl1 (Jogador (1,4) Oeste False)
-
-nextLevel :: Int -> Jogo -> Int
-nextLevel n (Jogo m (Jogador (x1,y1) _ _)) | x1 == x2 && y1 == y2 = n+1
-                                           | otherwise = n
-                                           where aux (p,(_,_)) = p == Porta
-                                                 (x2,y2) = giveCoordinates $ head $ filter aux $ desconstroiMapa m
-                                                 giveCoordinates (p,c) = c
