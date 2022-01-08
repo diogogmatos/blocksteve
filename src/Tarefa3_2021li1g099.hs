@@ -42,7 +42,7 @@ representaJogo :: Jogo
                -> String
 representaJogo (Jogo [] _) _ = "" -- caso de paragem - a função já percorreu toda a lista
 representaJogo (Jogo (h:t) a@(Jogador (x,y) d b)) acc | acc == y = escreveLinhaJ h x d 0 ++ (if null t then "" else "\n") ++ representaJogo (Jogo t a) (acc+1) --  caso (2.)
-                                                      | acc == (y-1) && b == True = escreveLinhaC h x 0 ++ (if null t then "" else "\n") ++ representaJogo (Jogo t a) (acc+1) -- caso (3.)
+                                                      | acc == (y-1) && b = escreveLinhaC h x 0 ++ (if null t then "" else "\n") ++ representaJogo (Jogo t a) (acc+1) -- caso (3.)
                                                       | otherwise = escreveLinha h ++ (if null t then "" else "\n") ++ representaJogo (Jogo t a) (acc+1) -- caso (1.)
 
 {- | A função ’escreveLinha’ converte uma lista de peças ([Peca]) numa String, onde cada peça é representada por um caracter diferente.
@@ -81,11 +81,11 @@ escreveLinhaJ :: [Peca] -- ^ Lista de peças correspondente à linha do Mapa que
               -> Int -- ^ Acumulador, de valor inicial 0, que tem como objetivo assumir um valor crescente de __x__
               -> String
 escreveLinhaJ [] _ _ _ = "" -- caso de paragem - a função já percorreu toda a lista
-escreveLinhaJ (p:ps) x d acc | acc /= x = if (p == Vazio) then " " ++ escreveLinhaJ ps x d (acc+1) -- caso (3.)
-                                          else if (p == Bloco) then "X" ++ escreveLinhaJ ps x d (acc+1)
-                                          else if (p == Caixa) then "C" ++ escreveLinhaJ ps x d (acc+1)
+escreveLinhaJ (p:ps) x d acc | acc /= x = if p == Vazio then " " ++ escreveLinhaJ ps x d (acc+1) -- caso (3.)
+                                          else if p == Bloco then "X" ++ escreveLinhaJ ps x d (acc+1)
+                                          else if p == Caixa then "C" ++ escreveLinhaJ ps x d (acc+1)
                                           else "P" ++ escreveLinhaJ ps x d (acc+1)
-                             | otherwise = if (d == Este) then ">" ++ escreveLinhaJ ps x d (acc+1) -- caso (2.)
+                             | otherwise = if d == Este then ">" ++ escreveLinhaJ ps x d (acc+1) -- caso (2.)
                                            else "<" ++ escreveLinhaJ ps x d (acc+1)
 
 {- | A função ’escreveLinhaC’ funciona de forma análoga a 'escreveLinhaJ' e tem como objetivo representar a Caixa que o jogador segura, no mapa.
@@ -103,8 +103,8 @@ escreveLinhaC :: [Peca] -- ^ Lista de peças correspondente à linha do Mapa que
                  -> Int -- ^ Acumulador, de valor inicial 0, que tem como objetivo assumir um valor crescente de __x__
                  -> String
 escreveLinhaC [] _ _ = "" -- caso de paragem - a função já percorreu toda a lista
-escreveLinhaC (p:ps) x acc | acc /= x = if (p == Vazio) then " " ++ escreveLinhaC ps x (acc+1) -- caso (3.)
-                                        else if (p == Bloco) then "X" ++ escreveLinhaC ps x (acc+1)
-                                        else if (p == Caixa) then "C" ++ escreveLinhaC ps x (acc+1)
+escreveLinhaC (p:ps) x acc | acc /= x = if p == Vazio then " " ++ escreveLinhaC ps x (acc+1) -- caso (3.)
+                                        else if p == Bloco then "X" ++ escreveLinhaC ps x (acc+1)
+                                        else if p == Caixa then "C" ++ escreveLinhaC ps x (acc+1)
                                         else "P" ++ escreveLinhaC ps x (acc+1)
                            | otherwise = "C" ++ escreveLinhaC ps x (acc+1) -- caso (2.)

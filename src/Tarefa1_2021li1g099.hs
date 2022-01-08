@@ -67,7 +67,7 @@ False
 -}
 
 validaPorta :: [(Peca,Coordenadas)] -> Bool
-validaPorta l = (contaPecas Porta 0 l) == 1
+validaPorta l = contaPecas Porta 0 l == 1
 
 {- | A função ’validaVazios’ verifica se existe no mínimo um "Vazio" no mapa. 
 
@@ -87,7 +87,7 @@ True
 -}
 
 validaVazios :: [(Peca,Coordenadas)] -> Bool
-validaVazios l = ((contaPecas Vazio 0 l) >= 1) || (length l /= ((xMax l + 1) * (yMax l + 1)))
+validaVazios l = (contaPecas Vazio 0 l >= 1) || (length l /= ((xMax l + 1) * (yMax l + 1)))
 
 {- | A função ’contaPecas’ conta quantas peças existem de um dado tipo numa lista. 
 
@@ -133,8 +133,8 @@ validaCaixas l1@((p,c):t) l2 | p == Caixa && not (on c l2) = False -- se 'on' n�
 on :: Coordenadas -- ^ Input das coordenadas de uma das caixas de um potencial mapa
       -> [(Peca,Coordenadas)] -> Bool
 on _ [] = True
-on (x,y) l | elem (Bloco,(x,y+1)) l = True
-           | elem (Caixa,(x,y+1)) l = True
+on (x,y) l | (Bloco,(x,y+1)) `elem` l = True
+           | (Caixa,(x,y+1)) `elem` l = True
            | otherwise = False
 
 -- 5
@@ -160,7 +160,7 @@ True
 validaChao :: [(Peca,Coordenadas)]
            -> Int -- ^ Input de um acumulador (inicialmente 0), que tem como objetivo assumir o valor da coluna do mapa que está a ser analisada pela função no momento. 
            -> Bool
-validaChao l acc | not (elem (Bloco,(acc,yMax (filter aux1 l))) l) = False -- se a peça com maior Y da coluna não for "Bloco" existe um "buraco", pelo que o mapa é inválido (False)
+validaChao l acc | (Bloco,(acc,yMax (filter aux1 l))) `notElem` l = False -- se a peça com maior Y da coluna não for "Bloco" existe um "buraco", pelo que o mapa é inválido (False)
                  | acc == xMax l = True -- se a função atinge a última coluna, então não foram encontradas falhas e o mapa é válido (True)
                  | (acc < xMax l) && validaLigacao (acc,yMax (filter aux1 l)) (acc+1, yMax (filter aux2 l)) l && validaChao l (acc+1) = True
                  | otherwise = False
