@@ -1,28 +1,14 @@
-# Laboratórios de Informática I
+# BlockSteve - Projeto LI1 UMinho
+Projeto desenvolvido no âmbito da disciplina de Laboratórios de Informática 1, que consistiu na recriação do jogo **BlockDude**, criado originalmente para calculadoras Texas NSpire.
 
-## Repositório
+O jogo foi desenvolvido em liguagem **Haskell** com a ajuda da livraria **Gloss**, sendo destinado a ser executado num OS baseado em Linux.
 
-O sistema de controlo de versões utilizado é o git. O repositório encontra-se disponível [nesta organização](https://gitlab.com/uminho-di/li1/2122). Para obter o repositório na sua máquina, garanta que tem a chave pública SSH adicionada na sua conta do GitLab com o email instituicional ([User Settings/SSH Keys](https://gitlab.com/-/profile/keys)), depois basta efetuar clone ao repositório.
+## Fontes:
 
-```bash
-$ git clone git@gitlab.com:uminho-di/li1/2122/2021li1g099.git
-$ cd 2021li1g099 
-```
+- **Original Game:** http://azich.org/blockdude/
+- **Gloss Library:** https://hackage.haskell.org/package/gloss
 
-## Testes
+## Desenvolvido por:
 
-O projecto contém testes unitários escritos usando a biblioteca [HUnit](https://hackage.haskell.org/package/HUnit). Os testes podem ser executados da seguinte forma.
-
-```bash
-$ ghci -i="src" -i="tests" tests/Tests.hs
->>> runTestsT1 -- Correr os testes tarefa 1
->>> runTestsT2 -- Correr os testes tarefa 2
->>> runTestsT3 -- Correr os testes tarefa 3
->>> runTestsT4 -- Correr os testes tarefa 4
->>> runAllTests -- Correr todos os testes
-```
-
-## Grupo 99
-
-- **A100537** Rui Pedro Cerqueira;
 - **A100741** Diogo Matos;
+- **A100537** Rui Pedro Cerqueira.
