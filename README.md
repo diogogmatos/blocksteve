@@ -12,7 +12,7 @@ The game was fully developed in Haskell and consisted of 6 tasks, each with its 
 - **Task 2** - Transforms a map from the data type "[(Peca, Coordenadas)]" to "Mapa" and vice-versa;
 - **Task 3** - Instance Show meant to display an output of the type "Jogo" as a string that creates a graphical representation of the current game state;
 - **Task 4** - Updates the current game state according to the players' movements;
-- **Task 5** - Graphical interface, developed with the Graphics.Gloss library, which can be found at: https://hackage.haskell.org/package/gloss
+- **Task 5** - Graphical interface, developed with the Graphics.Gloss library, which can be found at: https://hackage.haskell.org/package/gloss;
 - **Task 6** - Calculates the minimum necessary player movements to complete a map. (Unfinished)
 
 ## Game Images:
