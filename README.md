@@ -58,12 +58,20 @@ If you're using an Arch-based distribution, like Manjaro or ArcoLinux, you may n
 
 Also, make sure to additionally use the flag "--lib" when running cabal commands.
 
+### Downloading the repository
+
+Next up, let's clone the repository so that you have access to files by doing:
+
+```bash
+$ git clone https://github.com/sassypocoyo/blocksteve.git
+```
+
 ### Compiling
 
 We're all set up, all that's left to do is compile the game executable by doing:
 
 ```bash
-$ cd 2021li1g099/src
+$ cd blocksteve/src
 $ ghc Tarefa5_2021li1g099.hs
 ```
 And run it with:
@@ -71,7 +79,7 @@ And run it with:
 ```bash
 $ ./Tarefa5_2021li1g099
 ```
-You can also launch it from the file manager by opening the executable file, which is located at *~/2021li1g099/src/Tarefa5_2021li1g099*.
+You can also launch it from the file manager by opening the executable file, which is located at *~/blocksteve/src/Tarefa5_2021li1g099*.
 
 P.s: Using ESC exits the game, so always use the in-game controls to navigate.
 
