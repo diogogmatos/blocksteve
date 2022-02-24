@@ -33,6 +33,14 @@ The game was fully developed in Haskell and consisted of 6 tasks, each with its 
 
 <img align="center" width="700px" alt="Level Selection" src="https://github.com/sassypocoyo/blocksteve/blob/main/level-selection.png?raw=true" />
 
+## Added Features:
+
+- **Help Menu** - Gives you all the information about the game in a glance, by simply pressing 'H' on your keyboard;
+- **Zoom In/Out** - Allows you to easily adjust the map size by pressing '+' and '-';
+- **Level Selection** - Allows you to select and play a specific level, taking you back to the Menu after completion;
+- **Pause and Restart** - Easily pause or restart the level by pressing 'P' or 'R';
+- **Bot (Incomplete)** - Make the in-game bot resolve the current level by pressing 'B', if it is unable to, it will give you a red sad face :(.
+
 ## Installing and running the game:
 
 If you want to try this, you'll first need a Linux based system like macOS or Ubuntu. Depending on which, the process will be slightly different.
