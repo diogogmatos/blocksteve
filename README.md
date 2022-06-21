@@ -1,5 +1,7 @@
 # BlockSteve
 
+### Final Grade: 18/20
+
 This little game was developed during the first semester of the Computer Science and Engineering degree at UMinho (University Of Minho - Braga, Portugal).
 The full process of development was evaluated and established the final grade for the "Laboratórios de Informática I" subject.
 
@@ -15,7 +17,7 @@ The game was fully developed in Haskell and consisted of 6 tasks, each with its 
 - **Task 5** - Graphical interface, developed with the Graphics.Gloss library, which can be found at: https://hackage.haskell.org/package/gloss;
 - **Task 6** - Calculates the minimum necessary player movements to complete a map. (Unfinished)
 
-## Game Images:
+## Game Images
 
 **Menu**
 
@@ -33,7 +35,7 @@ The game was fully developed in Haskell and consisted of 6 tasks, each with its 
 
 <img align="center" width="700px" alt="Level Selection" src="https://github.com/sassypocoyo/blocksteve/blob/main/level-selection.png?raw=true" />
 
-## Added Features:
+## Added Features
 
 - **Help Menu** - Gives you all the information about the game in a glance, by simply pressing 'H' on your keyboard;
 - **Zoom In/Out** - Allows you to easily adjust the map size by pressing '+' and '-';
@@ -41,17 +43,17 @@ The game was fully developed in Haskell and consisted of 6 tasks, each with its 
 - **Pause and Restart** - Easily pause or restart the level by pressing 'P' or 'R';
 - **Bot (Incomplete)** - Make the in-game bot resolve the current level by pressing 'B', if it is unable to, it will give you a red sad face :(.
 
-## Installing and running the game:
+## Installing and running the game
 
 If you want to try this, you'll first need a Linux based system like macOS or Ubuntu. Depending on which, the process will be slightly different.
 
-### Haskell Platform
+### Haskell Platform:
 
 Installing *Haskell Platform* will give you all the dependencies you need for this to work, including GHC and Cabal.
 
 Follow the instructions for your specific system at: https://www.haskell.org/platform/
 
-### Gloss Library
+### Gloss Library:
 
 Finally, since the graphical interface of the game was developed using the Gloss library, you'll need to install it doing the following:
 
@@ -66,7 +68,7 @@ If you're using an Arch-based distribution, like Manjaro or ArcoLinux, you may n
 
 Also, make sure to additionally use the flag "--lib" when running cabal commands.
 
-### Downloading the repository
+### Downloading the repository:
 
 Next up, let's clone the repository so that you have access to files by doing:
 
@@ -74,7 +76,7 @@ Next up, let's clone the repository so that you have access to files by doing:
 $ git clone https://github.com/sassypocoyo/blocksteve.git
 ```
 
-### Compiling
+### Compiling:
 
 We're all set up, all that's left to do is compile the game executable by doing:
 
@@ -93,7 +95,7 @@ P.s: Using ESC exits the game, so always use the in-game controls to navigate.
 
 **Enjoy!**
 
-## Developed by:
+## Developed by
 
 - **A100741** Diogo Matos;
 - **A100537** Rui Pedro Cerqueira.
